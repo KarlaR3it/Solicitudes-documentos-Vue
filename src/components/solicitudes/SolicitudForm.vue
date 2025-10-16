@@ -22,77 +22,112 @@
       </BaseField>
 
       <div class="grid">
-        <BaseField label="Estado" required cols="12 md:col-6">
+        <BaseField label="Estado" required cols="12 md:col-6" :error="errors.estado">
           <Select
             v-model="solicitud.estado"
             :options="estadoOptions"
             placeholder="Selecciona el estado"
             class="w-full"
+            :class="{ 'p-invalid': errors.estado }"
           />
         </BaseField>
 
-        <BaseField label="Área" required cols="12 md:col-6">
+        <BaseField label="Área" required cols="12 md:col-6" :error="errors.area">
           <Select
             v-model="solicitud.area"
             :options="areaOptions"
             placeholder="Selecciona el área"
             class="w-full"
+            :class="{ 'p-invalid': errors.area }"
           />
         </BaseField>
       </div>
 
-      <div class="grid">
-        <BaseField label="País" required cols="12 md:col-6">
-          <Select
-            v-model="solicitud.pais"
-            :options="paisOptions"
-            placeholder="Selecciona el país"
-            class="w-full"
-          />
-        </BaseField>
-
-        <BaseField
-          label="Localización"
-          cols="12 md:col-6"
-          hint="Ciudad o región específica"
-        >
-          <InputText
-            v-model="solicitud.localizacion"
-            placeholder="Ej: Santiago, Valparaíso"
-            class="w-full"
-          />
-        </BaseField>
-      </div>
-
-      <BaseField label="Descripción" required>
-        <Textarea
-          v-model="solicitud.descripcion"
-          placeholder="Escribe una descripción detallada del puesto"
-          rows="4"
+      <!-- Campo condicional para Área Otra -->
+      <BaseField
+        v-if="solicitud.area === 'Otra'"
+        label="Especifica el área"
+        required
+        :error="errors.areaOtra"
+      >
+        <InputText
+          v-model="solicitud.areaOtra"
+          placeholder="Escribe el nombre del área"
           class="w-full"
+          :class="{ 'p-invalid': errors.areaOtra }"
+        />
+      </BaseField>
+
+      <BaseField label="País" required :error="errors.pais">
+        <Select
+          v-model="solicitud.pais"
+          :options="paisOptions"
+          placeholder="Selecciona el país"
+          class="w-full"
+          :class="{ 'p-invalid': errors.pais }"
+        />
+      </BaseField>
+
+      <!-- Campo condicional para País Otro -->
+      <BaseField
+        v-if="solicitud.pais === 'Otro'"
+        label="Especifica el país"
+        required
+        :error="errors.paisOtro"
+      >
+        <InputText
+          v-model="solicitud.paisOtro"
+          placeholder="Escribe el nombre del país"
+          class="w-full"
+          :class="{ 'p-invalid': errors.paisOtro }"
+        />
+      </BaseField>
+
+      <BaseField
+        label="Localización"
+        hint="Ciudad o región específica"
+        :error="errors.localizacion"
+      >
+        <InputText
+          v-model="solicitud.localizacion"
+          placeholder="Ej: Santiago, Valparaíso"
+          class="w-full"
+          :class="{ 'p-invalid': errors.localizacion }"
         />
       </BaseField>
     </BaseFormSection>
 
     <!-- Detalles del Puesto -->
     <BaseFormSection title="Detalles del Puesto">
+      <BaseField label="Descripción" required :error="errors.descripcion">
+        <Textarea
+          v-model="solicitud.descripcion"
+          placeholder="Escribe una descripción detallada del puesto"
+          rows="4"
+          class="w-full"
+          :class="{ 'p-invalid': errors.descripcion }"
+        />
+      </BaseField>
+
       <div class="grid">
-        <BaseField label="Número de Vacantes" required cols="12 md:col-6">
+        <BaseField label="Número de Vacantes" required cols="12 md:col-6" :error="errors.numeroVacantes">
           <InputNumber
             v-model="solicitud.numeroVacantes"
             :min="1"
             :max="100"
             placeholder="Cantidad de vacantes"
             class="w-full"
+            :class="{ 'p-invalid': errors.numeroVacantes }"
           />
         </BaseField>
 
-        <BaseField label="Nivel de Experiencia" required cols="12 md:col-6">
+        <BaseField label="Nivel de Experiencia" required cols="12 md:col-6" :error="errors.nivelExperiencia">
           <Select
             v-model="solicitud.nivelExperiencia"
             :options="nivelExperienciaOptions"
             placeholder="Selecciona el nivel"
             class="w-full"
+            :class="{ 'p-invalid': errors.nivelExperiencia }"
           />
         </BaseField>
       </div>
@@ -101,12 +136,14 @@
         label="Base Educacional"
         required
         hint="Título, certificaciones, etc."
+        :error="errors.baseEducacional"
       >
         <Textarea
           v-model="solicitud.baseEducacional"
           placeholder="Requisitos educacionales mínimos"
           rows="3"
           class="w-full"
+          :class="{ 'p-invalid': errors.baseEducacional }"
         />
       </BaseField>
 
@@ -114,12 +151,14 @@
         label="Conocimientos Excluyentes"
         required
         hint="Conocimientos técnicos indispensables"
+        :error="errors.conocimientosExcluyentes"
       >
         <Textarea
           v-model="solicitud.conocimientosExcluyentes"
           placeholder="Tecnologías, herramientas o habilidades obligatorias"
           rows="3"
           class="w-full"
+          :class="{ 'p-invalid': errors.conocimientosExcluyentes }"
         />
       </BaseField>
     </BaseFormSection>
@@ -165,21 +204,23 @@
       </div>
 
       <div class="grid">
-        <BaseField label="Modalidad de Trabajo" required cols="12 md:col-4">
+        <BaseField label="Modalidad de Trabajo" required cols="12 md:col-4" :error="errors.modalidadTrabajo">
           <Select
             v-model="solicitud.modalidadTrabajo"
             :options="modalidadTrabajoOptions"
             placeholder="Modalidad"
             class="w-full"
+            :class="{ 'p-invalid': errors.modalidadTrabajo }"
           />
         </BaseField>
 
-        <BaseField label="Tipo de Servicio" required cols="12 md:col-4">
+        <BaseField label="Tipo de Servicio" required cols="12 md:col-4" :error="errors.tipoServicio">
           <Select
             v-model="solicitud.tipoServicio"
             :options="tipoServicioOptions"
             placeholder="Tipo"
             class="w-full"
+            :class="{ 'p-invalid': errors.tipoServicio }"
           />
         </BaseField>
 
@@ -188,6 +229,7 @@
           required
           cols="12 md:col-4"
           hint="Debe ser una fecha futura"
+          :error="errors.fechaInicioProyecto"
         >
           <DatePicker
             v-model="solicitud.fechaInicioProyecto"
@@ -195,6 +237,7 @@
             dateFormat="dd/mm/yy"
             :minDate="new Date()"
             class="w-full"
+            :class="{ 'p-invalid': errors.fechaInicioProyecto }"
           />
         </BaseField>
       </div>
@@ -203,12 +246,14 @@
         label="Usuario ID"
         required
         hint="ID del usuario responsable de la solicitud"
+        :error="errors.usuarioId"
       >
         <InputNumber
           v-model="solicitud.usuarioId"
           placeholder="ID del usuario"
           :min="1"
           class="w-full"
+          :class="{ 'p-invalid': errors.usuarioId }"
         />
       </BaseField>
     </BaseFormSection>
@@ -219,6 +264,14 @@
 import { reactive, computed, ref, watch } from "vue";
 import { useToast } from "primevue/usetoast";
 import { useSolicitudesStore } from "../../stores/solicitudes.store";
+import {
+  validateText,
+  validateNumber,
+  validateNumberRange,
+  validateDate,
+  validateId,
+  validateSelect,
+} from "../../utils/validators";
 
 // Importar componentes base
 import BaseForm from "../common/BaseForm.vue";
@@ -260,7 +313,9 @@ export default {
       titulo: "",
       estado: "",
       area: "",
+      areaOtra: "", // Campo adicional cuando selecciona "Otra"
       pais: "",
+      paisOtro: "", // Campo adicional cuando selecciona "Otro"
       localizacion: "",
       numeroVacantes: 1,
       descripcion: "",
@@ -277,12 +332,11 @@ export default {
 
     // Opciones para los dropdowns
     const estadoOptions = [
-      "Borrador",
-      "Publicado",
       "En Revisión",
-      "Aprobado",
-      "Rechazado",
-      "Cerrado",
+      "Finalista",
+      "Aprobada",
+      "Rechazada",
+      "Retirada",
     ];
 
     const areaOptions = [
@@ -294,25 +348,38 @@ export default {
       "Operaciones",
       "Legal",
       "Administración",
+      "Otra",
     ];
 
     const paisOptions = [
-      "Chile",
       "Argentina",
-      "Perú",
-      "Colombia",
-      "México",
-      "España",
-      "Estados Unidos",
+      "Bolivia",
       "Brasil",
+      "Chile",
+      "Colombia",
+      "Costa Rica",
+      "Cuba",
+      "Ecuador",
+      "El Salvador",
+      "Guatemala",
+      "Honduras",
+      "México",
+      "Nicaragua",
+      "Panamá",
+      "Paraguay",
+      "Perú",
+      "República Dominicana",
+      "Uruguay",
+      "Venezuela",
+      "Otro",
     ];
 
     const nivelExperienciaOptions = [
-      "Junior (0-2 años)",
-      "Semi Senior (2-4 años)",
-      "Senior (4-7 años)",
-      "Lead (7+ años)",
-      "Manager (5+ años)",
+      "Junior",
+      "Semi Senior",
+      "Senior",
+      "Lead",
+      "Manager",
     ];
 
     const modalidadTrabajoOptions = ["Presencial", "Remoto", "Híbrido"];
@@ -329,24 +396,206 @@ export default {
     const validateForm = () => {
       errors.value = {};
 
-      if (!solicitud.titulo?.trim()) {
-        errors.value.titulo = "El título es obligatorio";
+      // Validar título (varchar 200) - Modo estricto
+      const tituloValidation = validateText(solicitud.titulo, {
+        maxLength: 200,
+        fieldName: "Título",
+        strictMode: true,
+      });
+      if (!tituloValidation.isValid) {
+        errors.value.titulo = tituloValidation.error;
       }
 
-      if (solicitud.rentaDesde <= 0) {
-        errors.value.rentaDesde = "La renta mínima debe ser mayor a 0";
+      // Validar estado (select)
+      const estadoValidation = validateSelect(solicitud.estado, {
+        fieldName: "Estado",
+        allowedValues: estadoOptions,
+      });
+      if (!estadoValidation.isValid) {
+        errors.value.estado = estadoValidation.error;
       }
 
-      if (solicitud.rentaHasta <= solicitud.rentaDesde) {
-        errors.value.rentaHasta =
-          "La renta máxima debe ser mayor que la mínima";
+      // Validar área (select)
+      const areaValidation = validateSelect(solicitud.area, {
+        fieldName: "Área",
+        allowedValues: areaOptions,
+      });
+      if (!areaValidation.isValid) {
+        errors.value.area = areaValidation.error;
+      }
+
+      // Validar área otra (varchar 50) si seleccionó "Otra" - Modo estricto
+      if (solicitud.area === "Otra") {
+        const areaOtraValidation = validateText(solicitud.areaOtra, {
+          maxLength: 50,
+          fieldName: "Área (Otra)",
+          strictMode: true,
+        });
+        if (!areaOtraValidation.isValid) {
+          errors.value.areaOtra = areaOtraValidation.error;
+        }
+      }
+
+      // Validar país (select)
+      const paisValidation = validateSelect(solicitud.pais, {
+        fieldName: "País",
+        allowedValues: paisOptions,
+      });
+      if (!paisValidation.isValid) {
+        errors.value.pais = paisValidation.error;
+      }
+
+      // Validar país otro (varchar 50) si seleccionó "Otro" - Modo estricto
+      if (solicitud.pais === "Otro") {
+        const paisOtroValidation = validateText(solicitud.paisOtro, {
+          maxLength: 50,
+          fieldName: "País (Otro)",
+          strictMode: true,
+        });
+        if (!paisOtroValidation.isValid) {
+          errors.value.paisOtro = paisOtroValidation.error;
+        }
+      }
+
+      // Validar localización (varchar 50, opcional) - Modo estricto
+      if (solicitud.localizacion) {
+        const localizacionValidation = validateText(solicitud.localizacion, {
+          maxLength: 50,
+          fieldName: "Localización",
+          required: false,
+          strictMode: true,
+        });
+        if (!localizacionValidation.isValid) {
+          errors.value.localizacion = localizacionValidation.error;
+        }
+      }
+
+      // Validar descripción (longtext)
+      const descripcionValidation = validateText(solicitud.descripcion, {
+        maxLength: 10000,
+        fieldName: "Descripción",
+      });
+      if (!descripcionValidation.isValid) {
+        errors.value.descripcion = descripcionValidation.error;
+      }
+
+      // Validar base educacional (longtext)
+      const baseEducacionalValidation = validateText(
+        solicitud.baseEducacional,
+        {
+          maxLength: 10000,
+          fieldName: "Base Educacional",
+        }
+      );
+      if (!baseEducacionalValidation.isValid) {
+        errors.value.baseEducacional = baseEducacionalValidation.error;
+      }
+
+      // Validar conocimientos excluyentes (longtext)
+      const conocimientosValidation = validateText(
+        solicitud.conocimientosExcluyentes,
+        {
+          maxLength: 10000,
+          fieldName: "Conocimientos Excluyentes",
+        }
+      );
+      if (!conocimientosValidation.isValid) {
+        errors.value.conocimientosExcluyentes = conocimientosValidation.error;
+      }
+
+      // Validar número de vacantes
+      const vacantesValidation = validateNumber(solicitud.numeroVacantes, {
+        min: 1,
+        max: 100,
+        fieldName: "Número de Vacantes",
+      });
+      if (!vacantesValidation.isValid) {
+        errors.value.numeroVacantes = vacantesValidation.error;
+      }
+
+      // Validar nivel de experiencia (select)
+      const nivelValidation = validateSelect(solicitud.nivelExperiencia, {
+        fieldName: "Nivel de Experiencia",
+        allowedValues: nivelExperienciaOptions,
+      });
+      if (!nivelValidation.isValid) {
+        errors.value.nivelExperiencia = nivelValidation.error;
+      }
+
+      // Validar renta desde
+      const rentaDesdeValidation = validateNumber(solicitud.rentaDesde, {
+        min: 1,
+        fieldName: "Renta Desde",
+      });
+      if (!rentaDesdeValidation.isValid) {
+        errors.value.rentaDesde = rentaDesdeValidation.error;
+      }
+
+      // Validar renta hasta
+      const rentaHastaValidation = validateNumber(solicitud.rentaHasta, {
+        min: 1,
+        fieldName: "Renta Hasta",
+      });
+      if (!rentaHastaValidation.isValid) {
+        errors.value.rentaHasta = rentaHastaValidation.error;
+      }
+
+      // Validar rango de rentas
+      if (rentaDesdeValidation.isValid && rentaHastaValidation.isValid) {
+        const rangoValidation = validateNumberRange(
+          solicitud.rentaDesde,
+          solicitud.rentaHasta,
+          {
+            fieldNameFrom: "Renta Desde",
+            fieldNameTo: "Renta Hasta",
+          }
+        );
+        if (!rangoValidation.isValid) {
+          errors.value.rentaHasta = rangoValidation.error;
+        }
+      }
+
+      // Validar modalidad de trabajo (select)
+      const modalidadValidation = validateSelect(solicitud.modalidadTrabajo, {
+        fieldName: "Modalidad de Trabajo",
+        allowedValues: modalidadTrabajoOptions,
+      });
+      if (!modalidadValidation.isValid) {
+        errors.value.modalidadTrabajo = modalidadValidation.error;
+      }
+
+      // Validar tipo de servicio (select)
+      const tipoServicioValidation = validateSelect(solicitud.tipoServicio, {
+        fieldName: "Tipo de Servicio",
+        allowedValues: tipoServicioOptions,
+      });
+      if (!tipoServicioValidation.isValid) {
+        errors.value.tipoServicio = tipoServicioValidation.error;
+      }
+
+      // Validar fecha de inicio (debe ser futura)
+      const fechaValidation = validateDate(solicitud.fechaInicioProyecto, {
+        fieldName: "Fecha Inicio Proyecto",
+        mustBeFuture: true,
+      });
+      if (!fechaValidation.isValid) {
+        errors.value.fechaInicioProyecto = fechaValidation.error;
+      }
+
+      // Validar usuario ID
+      const usuarioIdValidation = validateId(solicitud.usuarioId, {
+        fieldName: "Usuario ID",
+      });
+      if (!usuarioIdValidation.isValid) {
+        errors.value.usuarioId = usuarioIdValidation.error;
       }
 
       return Object.keys(errors.value).length === 0;
     };
 
-    // Validación del formulario
+    // Validación reactiva del formulario
     const isFormValid = computed(() => {
+      // Validar campos requeridos básicos
       const requiredFields = [
         "titulo",
         "estado",
@@ -361,6 +610,14 @@ export default {
         "fechaInicioProyecto",
         "usuarioId",
       ];
+
+      // Verificar campos condicionales
+      if (solicitud.area === "Otra" && !solicitud.areaOtra?.trim()) {
+        return false;
+      }
+      if (solicitud.pais === "Otro" && !solicitud.paisOtro?.trim()) {
+        return false;
+      }
 
       const hasRequiredFields = requiredFields.every((field) => {
         const value = solicitud[field];
@@ -395,6 +652,20 @@ export default {
           solicitud[key] = solicitudData[key];
         }
       });
+      
+      // Manejar campos personalizados: Área
+      if (solicitudData.area && !areaOptions.includes(solicitudData.area)) {
+        // Si el área no está en la lista, es un valor personalizado
+        solicitud.areaOtra = solicitudData.area;
+        solicitud.area = "Otra";
+      }
+      
+      // Manejar campos personalizados: País
+      if (solicitudData.pais && !paisOptions.includes(solicitudData.pais)) {
+        // Si el país no está en la lista, es un valor personalizado
+        solicitud.paisOtro = solicitudData.pais;
+        solicitud.pais = "Otro";
+      }
     };
 
     // Resetear formulario
@@ -411,16 +682,56 @@ export default {
         }
       });
       solicitud.fechaInicioProyecto = null;
+      
+      // Limpiar todos los errores
+      errors.value = {};
     };
 
     const sendSolicitud = async () => {
       // Validar formulario antes de enviar
       if (!validateForm()) {
+        const errorMessages = Object.values(errors.value);
+        const errorCount = errorMessages.length;
+        
+        // Detectar tipo de errores
+        const hasInvalidCharacters = errorMessages.some(msg => 
+          msg.includes('caracteres no permitidos')
+        );
+        const hasEmptyFields = errorMessages.some(msg => 
+          msg.includes('obligatorio')
+        );
+        const hasLengthErrors = errorMessages.some(msg => 
+          msg.includes('exceder') || msg.includes('al menos')
+        );
+        const hasRangeErrors = errorMessages.some(msg => 
+          msg.includes('mayor')
+        );
+        
+        // Mensaje específico según el tipo de error
+        let summary = "Formulario incompleto";
+        let detail = "";
+        
+        if (hasInvalidCharacters) {
+          summary = "Caracteres no permitidos";
+          detail = `Se detectaron caracteres inválidos en ${errorCount} campo${errorCount > 1 ? 's' : ''}. Por favor revisa los campos marcados en rojo.`;
+        } else if (hasEmptyFields) {
+          summary = "Campos obligatorios vacíos";
+          detail = `Faltan ${errorCount} campo${errorCount > 1 ? 's' : ''} obligatorio${errorCount > 1 ? 's' : ''}. Por favor completa los campos marcados en rojo.`;
+        } else if (hasLengthErrors) {
+          summary = "Error en longitud de texto";
+          detail = `Algunos campos exceden el límite de caracteres permitido. Por favor revisa los campos marcados en rojo.`;
+        } else if (hasRangeErrors) {
+          summary = "Error en valores numéricos";
+          detail = "Algunos valores numéricos son inválidos. Por favor revisa los campos marcados en rojo.";
+        } else {
+          detail = `Hay ${errorCount} error${errorCount > 1 ? 'es' : ''} en el formulario. Por favor corrige los campos marcados en rojo.`;
+        }
+        
         toast.add({
-          severity: "warn",
-          summary: "Formulario incompleto",
-          detail: "Por favor corrige los errores marcados en rojo",
-          life: 4000,
+          severity: "error",
+          summary: summary,
+          detail: detail,
+          life: 5000,
         });
         return;
       }
@@ -436,10 +747,18 @@ export default {
           baseEducacional: solicitud.baseEducacional.trim(),
           conocimientosExcluyentes: solicitud.conocimientosExcluyentes.trim(),
           localizacion: solicitud.localizacion?.trim() || "",
+          // Si seleccionó "Otra" en área, enviar el valor de areaOtra
+          area: solicitud.area === "Otra" ? solicitud.areaOtra.trim() : solicitud.area,
+          // Si seleccionó "Otro" en país, enviar el valor de paisOtro
+          pais: solicitud.pais === "Otro" ? solicitud.paisOtro.trim() : solicitud.pais,
           fechaInicioProyecto: solicitud.fechaInicioProyecto
             .toISOString()
             .split("T")[0],
         };
+        
+        // Eliminar campos auxiliares que no se envían al backend
+        delete solicitudData.areaOtra;
+        delete solicitudData.paisOtro;
 
         // Crear o actualizar según el modo
         if (props.editMode && props.solicitudToEdit) {
@@ -497,6 +816,20 @@ export default {
         }
       },
       { immediate: true }
+    );
+
+    // Watcher para limpiar errores específicos cuando el usuario corrige los campos
+    watch(
+      () => ({ ...solicitud }),
+      (newVal, oldVal) => {
+        // Limpiar error de cada campo que cambió
+        Object.keys(newVal).forEach((key) => {
+          if (newVal[key] !== oldVal[key] && errors.value[key]) {
+            delete errors.value[key];
+          }
+        });
+      },
+      { deep: true }
     );
 
     return {
