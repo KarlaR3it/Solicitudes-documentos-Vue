@@ -201,6 +201,19 @@ export default {
       if (!validateForm()) {
         const errorMessages = Object.values(errors.value);
         const errorCount = errorMessages.length;
+        const errorFields = Object.keys(errors.value);
+
+        // Mapeo de nombres técnicos a nombres amigables
+        const fieldLabels = {
+          solicitudId: "Solicitud",
+          extension: "Extensión",
+          nombreArchivo: "Nombre del Archivo",
+        };
+
+        // Crear lista de campos con error
+        const fieldList = errorFields
+          .map(field => `• ${fieldLabels[field] || field}`)
+          .join('\n');
 
         const hasInvalidCharacters = errorMessages.some((msg) =>
           msg.includes("caracteres no permitidos")
@@ -209,25 +222,38 @@ export default {
           msg.includes("obligatorio")
         );
 
-        let summary = "Formulario incompleto";
+        let summary = "⚠️ Formulario incompleto";
         let detail = "";
 
         if (hasInvalidCharacters) {
-          summary = "Caracteres no permitidos";
-          detail = `Se detectaron caracteres inválidos en ${errorCount} campo${errorCount > 1 ? "s" : ""}. Por favor revisa los campos marcados en rojo.`;
+          summary = "❌ Caracteres no permitidos";
+          detail = `Se detectaron caracteres inválidos en ${errorCount} campo${errorCount > 1 ? "s" : ""}:\n\n${fieldList}\n\nPor favor, revisa y corrige los campos marcados en rojo.`;
         } else if (hasEmptyFields) {
-          summary = "Campos obligatorios vacíos";
-          detail = `Faltan ${errorCount} campo${errorCount > 1 ? "s" : ""} obligatorio${errorCount > 1 ? "s" : ""}. Por favor completa los campos marcados en rojo.`;
+          summary = "📝 Campos obligatorios faltantes";
+          detail = `Debes completar ${errorCount} campo${errorCount > 1 ? "s" : ""} obligatorio${errorCount > 1 ? "s" : ""}:\n\n${fieldList}\n\nCompleta todos los campos marcados con * para continuar.`;
         } else {
-          detail = `Hay ${errorCount} error${errorCount > 1 ? "es" : ""} en el formulario. Por favor corrige los campos marcados en rojo.`;
+          detail = `Hay ${errorCount} error${errorCount > 1 ? "es" : ""} en el formulario:\n\n${fieldList}\n\nCorrige los campos marcados en rojo para continuar.`;
         }
 
         toast.add({
-          severity: "error",
+          severity: "warn",
           summary: summary,
           detail: detail,
-          life: 5000,
+          life: 7000,
         });
+
+        // Hacer scroll al primer campo con error
+        setTimeout(() => {
+          const firstErrorField = document.querySelector('.p-invalid');
+          if (firstErrorField) {
+            firstErrorField.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center' 
+            });
+            firstErrorField.focus();
+          }
+        }, 100);
+
         return;
       }
 

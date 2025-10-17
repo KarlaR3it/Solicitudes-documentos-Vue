@@ -84,8 +84,11 @@ export default {
       // Ancho completo
       if (this.fullWidth) classes.push("w-full");
 
-      // Variant específico para botón primario
+      // Variant específico para botones
       if (this.variant === "primary") classes.push("btn-primary");
+      if (this.variant === "warning") classes.push("btn-warning");
+      if (this.variant === "danger") classes.push("btn-danger");
+      if (this.variant === "secondary") classes.push("btn-secondary");
 
       return classes.join(" ");
     },

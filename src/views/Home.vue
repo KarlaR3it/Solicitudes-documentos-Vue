@@ -241,7 +241,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 0.8rem;
+  gap: 0.5rem;
 }
 
 .step {
@@ -273,14 +273,14 @@ export default {
 
 .step-content p {
   color: #64748b;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.2;
 }
 
 .step-arrow {
   color: #cbd5e1;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   flex-shrink: 0;
 }
 

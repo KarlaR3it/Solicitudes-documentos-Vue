@@ -27,6 +27,9 @@
       <div v-else-if="currentView === 'documentos'">
         <DocumentoList />
       </div>
+
+      <!-- Vista Acerca del Autor -->
+      <About v-else-if="currentView === 'about'" />
     </main>
     <Footer />
     <Toast />
@@ -38,6 +41,7 @@ import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { NavBar, Footer } from "./components/shared";
 import Home from "./views/Home.vue";
+import About from "./components/About.vue";
 import { SolicitudForm, SolicitudList } from "./components/solicitudes";
 import { DocumentoList } from "./components/documentos";
 import useFormSolicitud from "./composables/useFormSolicitud";
@@ -49,6 +53,7 @@ export default {
     NavBar,
     Footer,
     Home,
+    About,
     SolicitudForm,
     SolicitudList,
     DocumentoList,

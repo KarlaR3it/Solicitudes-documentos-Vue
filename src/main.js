@@ -10,6 +10,7 @@ import 'primeicons/primeicons.css'
 import { createPinia } from 'pinia'
 
 import './styles/primevue-global.css'
+import './assets/styles/dialog-buttons.css'
 
 // Componentes PrimeVue
 import Button from 'primevue/button'

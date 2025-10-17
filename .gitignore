@@ -23,4 +23,5 @@ pnpm-debug.log*
 *.sw?
 
 # Project tracking files
-PROGRESO.md
+CHECKLIST-FINAL.md
+RESUMEN-FINAL.md

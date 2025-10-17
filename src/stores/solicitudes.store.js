@@ -3,11 +3,12 @@ import { defineStore } from 'pinia'
 import { 
   getSolicitudesApi, 
   saveSolicitudApi, 
-  deleteSolicitudApi 
+  deleteSolicitudApi,
+  updateSolicitudApi
 } from '../api/solicitud'
 
 /**
- * Store de Solicitudes - Patrón Klerith (Composition API)
+ * Store de Solicitudes - Patrón Composition API
  * Maneja el estado global de las solicitudes
  */
 export const useSolicitudesStore = defineStore('solicitudes', () => {
@@ -104,25 +105,9 @@ export const useSolicitudesStore = defineStore('solicitudes', () => {
     error.value = null
     
     try {
-      // TODO: Implementar updateSolicitudApi cuando esté disponible
-      // Por ahora, actualizamos localmente
-      const index = solicitudes.value.findIndex(s => s.id === id)
-      if (index !== -1) {
-        solicitudes.value[index] = {
-          ...solicitudes.value[index],
-          ...solicitudData,
-          updatedAt: new Date()
-        }
-        
-        // Guardar en localStorage
-        const allSolicitudes = getSolicitudesApi()
-        const solicitudIndex = allSolicitudes.findIndex(s => s.id === id)
-        if (solicitudIndex !== -1) {
-          allSolicitudes[solicitudIndex] = solicitudes.value[index]
-          localStorage.setItem('SOLICITUDES', JSON.stringify(allSolicitudes))
-        }
-      }
-      
+      await updateSolicitudApi(id, solicitudData)
+      // Recargar solicitudes después de actualizar
+      await fetchSolicitudes()
       return { success: true }
     } catch (err) {
       error.value = err.message || 'Error al actualizar solicitud'

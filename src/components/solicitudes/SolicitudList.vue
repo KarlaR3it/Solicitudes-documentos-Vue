@@ -1,32 +1,31 @@
 <template>
   <div class="max-w-screen-xl mx-auto px-3">
+    <!-- Header con título y botón -->
+    <div class="list-header">
+      <h2 class="list-title">
+        <i class="pi pi-book"></i>
+        Lista de Solicitudes
+      </h2>
+      <BaseButton
+        v-if="solicitudes.length > 0"
+        label="Nueva Solicitud"
+        icon="pi pi-plus"
+        variant="success"
+        @click="openCloseForm"
+      />
+    </div>
+
     <Card>
-      <template #title>
-        <div class="flex align-items-center gap-2">
-          <i class="pi pi-list icon-title"></i>
-          Lista de Solicitudes
-        </div>
-      </template>
       <template #content>
         <div v-if="solicitudes.length === 0" class="text-center py-4">
           <i class="pi pi-inbox text-4xl text-400 mb-3 block"></i>
           <p class="text-600 text-lg">No hay ninguna solicitud registrada</p>
-          <Button
-            :label="'Nueva Solicitud'"
-            :icon="'pi pi-plus'"
-            :severity="'success'"
-            @click="openCloseForm"
-            class="btn-primary mt-3"
-          />
-        </div>
-
-        <div v-else-if="!showForm" class="flex justify-content-end mb-3">
-          <Button
+          <BaseButton
             label="Nueva Solicitud"
             icon="pi pi-plus"
-            severity="success"
+            variant="success"
             @click="openCloseForm"
-            class="btn-primary"
+            class="mt-3"
           />
         </div>
 
@@ -43,6 +42,14 @@
           class="p-datatable-sm clickable-table"
           @row-click="onRowClick"
         >
+          <Column field="id" header="ID" :sortable="true" style="width: 80px">
+            <template #body="slotProps">
+              <div class="flex align-items-center">
+                <Tag :value="'#' + slotProps.data.id" severity="secondary" class="id-tag" />
+              </div>
+            </template>
+          </Column>
+
           <Column field="titulo" header="Título" :sortable="true">
             <template #body="slotProps">
               <div class="flex align-items-center gap-2">
@@ -113,6 +120,7 @@ import "moment/locale/es";
 import { useToast } from "primevue/usetoast";
 import { useSolicitudesStore } from "../../stores/solicitudes.store";
 import SolicitudDetail from "./SolicitudDetail.vue";
+import BaseButton from "../common/BaseButton.vue";
 import Tag from "primevue/tag";
 //import solicitudApi from '../../api/solicitud';
 
@@ -121,6 +129,7 @@ import Tag from "primevue/tag";
 export default {
   components: {
     SolicitudDetail,
+    BaseButton,
     Tag,
   },
   props: {
@@ -137,7 +146,7 @@ export default {
     const toast = useToast();
     const showDetailDialog = ref(false);
     const selectedSolicitud = ref(null);
-    
+
     // Store de Pinia
     const solicitudesStore = useSolicitudesStore();
 
@@ -171,7 +180,7 @@ export default {
         // Eliminar usando el store de Pinia
         await solicitudesStore.deleteSolicitud(solicitudId);
         showDetailDialog.value = false;
-        
+
         toast.add({
           severity: "success",
           summary: "¡Eliminada!",
@@ -225,8 +234,36 @@ export default {
   background: var(--p-surface-0);
 }
 
+/* Header de la lista */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.list-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--brand-primary);
+  margin: 0;
+}
+
+.list-title i {
+  font-size: 1.5rem;
+}
+
 .area-tag {
   font-size: 0.75rem;
+}
+
+.id-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .clickable-table {
@@ -244,19 +281,20 @@ export default {
   color: var(--p-primary-600) !important;
 }
 
-/* Responsive: oculta texto del botón en móviles */
+/* Responsive */
 @media (max-width: 768px) {
-  .btn-primary .p-button-label {
-    display: none;
+  .list-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
   }
 
-  .btn-primary {
-    padding: var(--spacing-xs) !important;
-    width: auto !important;
+  .list-title {
+    justify-content: center;
   }
 
-  .flex.justify-content-end {
-    justify-content: center !important;
+  :deep(.p-button .p-button-label) {
+    display: inline;
   }
 }
 </style>

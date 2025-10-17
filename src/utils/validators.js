@@ -33,40 +33,57 @@ export const sanitizeInput = (value) => {
 };
 
 /**
- * Valida que el texto no contenga patrones peligrosos
+ * Valida que el texto no contenga patrones peligrosos de SQL Injection
+ * NOTA: Esta es una capa adicional. El backend DEBE usar prepared statements.
  * @param {string} value - Valor a validar
  * @returns {Object} { isValid, error }
  */
 export const validateSQLSafe = (value) => {
   if (!value || typeof value !== 'string') return { isValid: true, error: null };
   
-  // Caracteres peligrosos individuales (detectados en cualquier posición)
-  const dangerousChars = ["'", '"', ';', '\\', '(', ')', '/', '*', '#', '=', '!', '<', '>'];
+  // Caracteres CRÍTICOS para SQL Injection (solo los realmente peligrosos)
+  const criticalChars = ["'", '"', ';', '\\'];
   
-  // Verificar caracteres peligrosos
-  for (const char of dangerousChars) {
+  // Verificar caracteres críticos
+  for (const char of criticalChars) {
     if (value.includes(char)) {
       return {
         isValid: false,
-        error: 'El texto contiene caracteres no permitidos',
+        error: 'El texto contiene caracteres no permitidos (comillas o punto y coma)',
       };
     }
   }
   
-  // Verificar comentarios SQL (-- en cualquier posición)
-  if (value.includes('--')) {
+  // Verificar comentarios SQL
+  if (value.includes('--') || value.includes('/*') || value.includes('*/')) {
     return {
       isValid: false,
-      error: 'El texto contiene caracteres no permitidos',
+      error: 'El texto contiene secuencias de comentarios no permitidas',
     };
   }
   
-  // Verificar operadores lógicos OR y AND (en cualquier posición, case-insensitive)
+  // Verificar palabras clave SQL peligrosas (solo si están aisladas)
   const upperValue = value.toUpperCase();
-  if (upperValue.includes(' OR ') || upperValue.includes(' AND ')) {
+  const dangerousKeywords = [
+    ' DROP ', ' DELETE ', ' TRUNCATE ', ' ALTER ', ' EXEC ', ' EXECUTE ',
+    ' UNION ', ' INSERT ', ' UPDATE ', ' CREATE ', ' GRANT ', ' REVOKE '
+  ];
+  
+  for (const keyword of dangerousKeywords) {
+    if (upperValue.includes(keyword)) {
+      return {
+        isValid: false,
+        error: 'El texto contiene palabras reservadas no permitidas',
+      };
+    }
+  }
+  
+  // Verificar operadores lógicos sospechosos (solo si están aislados)
+  if (upperValue.includes(' OR 1=1') || upperValue.includes(' AND 1=1') || 
+      upperValue.includes("' OR '") || upperValue.includes('" OR "')) {
     return {
       isValid: false,
-      error: 'El texto contiene caracteres no permitidos',
+      error: 'El texto contiene patrones sospechosos',
     };
   }
   
@@ -110,8 +127,8 @@ export const validateText = (value, {
   
   // Modo estricto: solo caracteres alfanuméricos y símbolos básicos seguros
   if (strictMode) {
-    // Permite: letras (con acentos), números, espacios, puntos, guiones y guión bajo
-    const safePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.\-_]*$/;
+    // Permite: letras (con acentos), números, espacios, puntos, comas, guiones, guión bajo, paréntesis, y símbolos comunes (+, /, #)
+    const safePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,\-_()/+#]*$/;
     if (!safePattern.test(trimmedValue)) {
       return {
         isValid: false,

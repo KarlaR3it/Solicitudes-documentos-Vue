@@ -27,8 +27,8 @@ export default {
 
 <style scoped>
 .file-icon {
-  width: 80px;
-  height: 100px;
+  width: 60px;
+  height: 80px;
   position: relative;
   display: inline-block;
 }

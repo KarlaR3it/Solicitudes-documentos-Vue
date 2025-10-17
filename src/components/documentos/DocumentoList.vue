@@ -1,5 +1,5 @@
 <template>
-  <div class="documento-list-container">
+  <div class="max-w-screen-xl mx-auto px-3">
     <DocumentoForm
       :showForm="showForm"
       :openCloseForm="openCloseForm"
@@ -7,80 +7,105 @@
       :documentoToEdit="documentoToEdit"
     />
 
+    <!-- Header con título y botón -->
     <div class="list-header">
       <h2 class="list-title">
         <i class="pi pi-file"></i>
-        Gestión de Documentos
+        Lista de Documentos
       </h2>
       <BaseButton
-        v-if="!documentosStore.loading && documentosStore.documentos.length > 0"
+        v-if="documentosStore.documentos.length > 0"
         label="Nuevo Documento"
         icon="pi pi-plus"
+        variant="success"
         @click="openCreateForm"
       />
     </div>
 
-    <div v-if="documentosStore.loading" class="loading-container">
-      <ProgressSpinner />
-    </div>
+    <Card>
+      <template #content>
+        <div v-if="documentosStore.loading" class="loading-container">
+          <ProgressSpinner />
+        </div>
 
-    <div v-else-if="documentosStore.documentos.length === 0" class="empty-state">
-      <i class="pi pi-inbox empty-icon"></i>
-      <p class="empty-text">No hay documentos registrados</p>
-      <BaseButton
-        label="Crear Primer Documento"
-        icon="pi pi-plus"
-        @click="openCreateForm"
-      />
-    </div>
+        <div v-else-if="documentosStore.documentos.length === 0" class="text-center py-4">
+          <i class="pi pi-inbox text-4xl text-400 mb-3 block"></i>
+          <p class="text-600 text-lg">No hay documentos registrados</p>
+          <BaseButton
+            label="Nuevo Documento"
+            icon="pi pi-plus"
+            variant="success"
+            @click="openCreateForm"
+            class="mt-3"
+          />
+        </div>
 
-    <div v-else class="documentos-grid">
-      <Card
-        v-for="documento in documentosStore.documentos"
-        :key="documento.id"
-        class="documento-card"
-      >
-        <template #header>
-          <div class="card-header">
-            <FileIcon :extension="documento.extension" />
-          </div>
-        </template>
-        <template #title>
-          <div class="documento-title">
-            {{ documento.nombre_archivo || documento.nombreArchivo }}.{{ documento.extension }}
-          </div>
-        </template>
-        <template #subtitle>
-          <div class="documento-subtitle">
-            <div><strong>Solicitud ID:</strong> {{ documento.solicitud?.solicitud_id || documento.solicitud_id || documento.solicitudId }}</div>
-            <div><strong>Título:</strong> {{ documento.solicitud?.titulo || getSolicitudTitulo(documento.solicitud_id || documento.solicitudId) }}</div>
-            <div><strong>Área:</strong> {{ documento.solicitud?.area || 'N/A' }}</div>
-          </div>
-        </template>
-        <template #footer>
-          <div class="card-actions">
-            <BaseButton
-              icon="pi pi-eye"
-              variant="info"
-              text
-              @click="viewDocumento(documento)"
-            />
-            <BaseButton
-              icon="pi pi-pencil"
-              variant="warning"
-              text
-              @click="editDocumento(documento)"
-            />
-            <BaseButton
-              icon="pi pi-trash"
-              variant="danger"
-              text
-              @click="confirmDelete(documento)"
-            />
-          </div>
-        </template>
-      </Card>
-    </div>
+        <!-- DataTable -->
+        <DataTable
+          v-if="!documentosStore.loading && documentosStore.documentos.length > 0"
+          :value="documentosStore.documentos"
+          responsiveLayout="scroll"
+          :paginator="true"
+          :rows="10"
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          :rowsPerPageOptions="[5, 10, 25]"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} documentos"
+          class="p-datatable-sm clickable-table"
+          @row-click="onRowClick"
+        >
+          <Column field="id" header="ID" :sortable="true" style="width: 80px">
+            <template #body="slotProps">
+              <div class="flex align-items-center">
+                <Tag :value="'#' + slotProps.data.id" severity="secondary" class="id-tag" />
+              </div>
+            </template>
+          </Column>
+
+          <Column field="nombre_archivo" header="Nombre del Archivo" :sortable="true">
+            <template #body="slotProps">
+              <div class="flex align-items-center gap-2">
+                <span class="font-semibold">
+                  {{ slotProps.data.nombre_archivo || slotProps.data.nombreArchivo }}.{{ slotProps.data.extension }}
+                </span>
+              </div>
+            </template>
+          </Column>
+
+          <Column field="extension" header="Extensión" :sortable="true" style="width: 150px">
+            <template #body="slotProps">
+              <div class="flex justify-content-center">
+                <FileIcon :extension="slotProps.data.extension" :size="48" />
+              </div>
+            </template>
+          </Column>
+
+          <Column field="solicitud_id" header="Solicitud" :sortable="true" style="width: 280px">
+            <template #body="slotProps">
+              <div class="solicitud-info">
+                <div class="solicitud-id">
+                  #{{ slotProps.data.solicitud?.solicitud_id || slotProps.data.solicitud_id || slotProps.data.solicitudId }}
+                </div>
+                <div class="solicitud-titulo">
+                  {{ slotProps.data.solicitud?.titulo || getSolicitudTitulo(slotProps.data.solicitud_id || slotProps.data.solicitudId) }}
+                </div>
+              </div>
+            </template>
+          </Column>
+
+          <Column header="" style="width: 50px">
+            <template #body>
+              <div class="flex justify-content-center">
+                <i
+                  class="pi pi-eye text-primary cursor-pointer"
+                  v-tooltip="'Ver detalle'"
+                  style="font-size: 1.2rem"
+                ></i>
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
+    </Card>
 
     <DocumentoDetail
       :visible="showDetail"
@@ -90,35 +115,14 @@
       @delete="confirmDelete"
     />
 
-    <Dialog
+    <BaseConfirm
       v-model:visible="showDeleteDialog"
       header="Confirmar Eliminación"
-      :modal="true"
-      :style="{ width: '450px' }"
-    >
-      <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: var(--red-500)"></i>
-        <span>
-          ¿Estás seguro de eliminar el documento
-          <strong>{{ documentoToDelete?.nombre_archivo || documentoToDelete?.nombreArchivo }}.{{ documentoToDelete?.extension }}</strong>?
-        </span>
-      </div>
-      <template #footer>
-        <BaseButton
-          label="Cancelar"
-          icon="pi pi-times"
-          variant="secondary"
-          outlined
-          @click="showDeleteDialog = false"
-        />
-        <BaseButton
-          label="Eliminar"
-          icon="pi pi-trash"
-          variant="danger"
-          @click="deleteDocumento"
-        />
-      </template>
-    </Dialog>
+      :message="`¿Estás seguro de eliminar el documento <strong>${documentoToDelete?.nombre_archivo || documentoToDelete?.nombreArchivo}.${documentoToDelete?.extension}</strong>?`"
+      cancelLabel="Cancelar"
+      confirmLabel="Eliminar"
+      @confirm="deleteDocumento"
+    />
   </div>
 </template>
 
@@ -132,7 +136,10 @@ import DocumentoDetail from "./DocumentoDetail.vue";
 import BaseButton from "../common/BaseButton.vue";
 import FileIcon from "../common/FileIcon.vue";
 import Card from "primevue/card";
-import Dialog from "primevue/dialog";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import Tag from "primevue/tag";
+import BaseConfirm from "../common/BaseConfirm.vue";
 import ProgressSpinner from "primevue/progressspinner";
 
 export default {
@@ -142,7 +149,10 @@ export default {
     BaseButton,
     FileIcon,
     Card,
-    Dialog,
+    DataTable,
+    Column,
+    Tag,
+    BaseConfirm,
     ProgressSpinner,
   },
   setup() {
@@ -224,6 +234,20 @@ export default {
       return solicitud ? solicitud.titulo : 'Sin título';
     };
 
+    const getExtensionSeverity = (extension) => {
+      const severities = {
+        pdf: "danger",
+        docx: "info",
+        jpg: "success",
+        png: "success",
+      };
+      return severities[extension] || "secondary";
+    };
+
+    const onRowClick = (event) => {
+      viewDocumento(event.data);
+    };
+
     onMounted(async () => {
       try {
         // Cargar solicitudes primero para tener los títulos disponibles
@@ -261,32 +285,63 @@ export default {
       confirmDelete,
       deleteDocumento,
       getSolicitudTitulo,
+      getExtensionSeverity,
+      onRowClick,
     };
   },
 };
 </script>
 
 <style scoped>
-.documento-list-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
+:deep(.p-datatable) {
+  border-radius: 8px;
+  overflow: hidden;
 }
 
+:deep(.p-datatable .p-datatable-tbody > tr) {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+:deep(.p-datatable .p-datatable-tbody > tr:hover) {
+  background: var(--p-primary-50);
+  font-weight: bold;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+:deep(.p-paginator) {
+  border-top: 1px solid var(--p-surface-border);
+  background: var(--p-surface-0);
+}
+
+/* Header de la lista */
 .list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
 }
 
 .list-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
   color: var(--brand-primary);
-  font-size: 1.8rem;
   margin: 0;
+}
+
+.list-title i {
+  font-size: 1.5rem;
+}
+
+.id-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .loading-container {
@@ -296,74 +351,31 @@ export default {
   min-height: 400px;
 }
 
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-}
-
-.empty-icon {
-  font-size: 4rem;
-  color: var(--p-surface-400);
-  margin-bottom: 1rem;
-}
-
-.empty-text {
-  font-size: 1.2rem;
-  color: var(--p-surface-600);
-  margin-bottom: 2rem;
-}
-
-.documentos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.documento-card {
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.documento-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
-}
-
-.card-header i {
-  font-size: 3rem;
-  color: white;
-}
-
-.documento-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--brand-primary);
-  word-break: break-word;
-}
-
-.documento-subtitle {
+.solicitud-info {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+.solicitud-id {
+  font-weight: 600;
+  color: var(--brand-primary);
   font-size: 0.9rem;
-  color: var(--p-surface-600);
 }
 
-.documento-subtitle strong {
-  color: var(--p-surface-700);
+.solicitud-titulo {
+  font-size: 0.85rem;
+  color: var(--p-text-secondary-color);
 }
 
-.card-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
+.clickable-table {
+  position: relative;
+}
+
+/* Indicador visual de que es clickeable */
+:deep(.p-datatable .p-datatable-tbody > tr:hover .pi-eye) {
+  transform: scale(1.2);
+  color: var(--p-primary-600) !important;
 }
 
 .confirmation-content {
@@ -372,19 +384,20 @@ export default {
   gap: 1rem;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
-  .documento-list-container {
-    padding: 1rem;
-  }
-
   .list-header {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
   }
 
-  .documentos-grid {
-    grid-template-columns: 1fr;
+  .list-title {
+    justify-content: center;
+  }
+
+  :deep(.p-button .p-button-label) {
+    display: inline;
   }
 }
 </style>

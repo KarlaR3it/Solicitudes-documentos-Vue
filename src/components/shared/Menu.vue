@@ -19,7 +19,7 @@
             @click="selectOption('solicitudes')"
             class="menu-item flex align-items-center p-3 cursor-pointer hover:surface-100 transition-colors"
           >
-            <i class="pi pi-file-edit mr-3 text-primary"></i>
+            <i class="pi pi-book mr-3 text-primary"></i>
             <span>Solicitudes</span>
           </a>
         </li>
@@ -30,6 +30,15 @@
           >
             <i class="pi pi-file mr-3 text-primary"></i>
             <span>Documentos</span>
+          </a>
+        </li>
+        <li>
+          <a
+            @click="selectOption('about')"
+            class="menu-item flex align-items-center p-3 cursor-pointer hover:surface-100 transition-colors"
+          >
+            <i class="pi pi-user mr-3 text-primary"></i>
+            <span>Acerca del Autor</span>
           </a>
         </li>
       </ul>
@@ -72,7 +81,7 @@ export default {
 
 <style scoped>
 .menu-content {
-  min-width: 250px;
+  min-width: 200px;
   background: var(--p-surface-0);
   border-radius: 8px;
   overflow: hidden;
@@ -84,7 +93,10 @@ export default {
 }
 
 .menu-list {
-  padding: 0.5rem 0;
+  padding: 0.8rem 0rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .menu-item {

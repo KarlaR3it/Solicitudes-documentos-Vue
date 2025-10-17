@@ -38,10 +38,12 @@ export async function deleteSolicitudApi(idSolicitud) {
 // Actualizar una solicitud
 export async function updateSolicitudApi(id, solicitudData) {
     try {
+        console.log('🔍 Datos enviados al PATCH:', { id, solicitudData });
         const response = await axios.patch(`${API_URL}/${id}`, solicitudData);
         return response.data;
     } catch (error) {
-        console.error('Error al actualizar solicitud:', error);
+        console.error('❌ Error al actualizar solicitud:', error);
+        console.error('❌ Response:', error.response?.data);
         throw error;
     }
 }

@@ -1,8 +1,8 @@
-# 🚀 Sistema de Gestión de Solicitudes - Frontend Vue 3
+# 🚀 Sistema de Gestión de Solicitudes y Documentos
 
-> **Proyecto académico** - Sistema para gestionar solicitudes de trabajo y documentos asociados
+> **Aplicación web moderna** para la gestión integral de solicitudes de trabajo y documentos asociados
 
-[![Vue 3](https://img.shields.io/badge/Vue-3.2-4FC08D?logo=vue.js)](https://vuejs.org/)
+[![Vue 3](https://img.shields.io/badge/Vue-3.5-4FC08D?logo=vue.js)](https://vuejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.1-646CFF?logo=vite)](https://vitejs.dev/)
 [![Pinia](https://img.shields.io/badge/Pinia-3.0-FFD859?logo=pinia)](https://pinia.vuejs.org/)
 [![PrimeVue](https://img.shields.io/badge/PrimeVue-4.4-007ACC)](https://primevue.org/)
@@ -11,27 +11,61 @@
 
 ## 📋 Tabla de Contenidos
 
-- [Características](#características)
-- [Requisitos Previos](#requisitos-previos)
-- [Instalación Rápida](#instalación-rápida)
-- [Uso con Makefile](#uso-con-makefile)
-- [Uso con Docker](#uso-con-docker)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Scripts Disponibles](#scripts-disponibles)
-- [Tecnologías Utilizadas](#tecnologías-utilizadas)
+- [Características](#-características)
+- [Capturas de Pantalla](#-capturas-de-pantalla)
+- [Requisitos Previos](#-requisitos-previos)
+- [Instalación](#-instalación)
+- [Configuración](#-configuración)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Tecnologías Utilizadas](#️-tecnologías-utilizadas)
+- [Autor](#-autor)
 
 ---
 
 ## ✨ Características
 
-- ✅ **CRUD completo** de Solicitudes (Crear, Leer, Actualizar, Eliminar)
-- ✅ **Gestión de estado** centralizada con Pinia
-- ✅ **Componentes reutilizables** (BaseForm, BaseField, BaseButton)
-- ✅ **UI moderna** con PrimeVue (DataTable, Dialog, Toast)
-- ✅ **Responsive design** - Funciona en móviles y desktop
-- ✅ **Validaciones** en tiempo real
-- ✅ **Hot Module Replacement** para desarrollo rápido
-- ⏳ CRUD de Documentos (en desarrollo)
+### Gestión de Solicitudes
+- ✅ **CRUD completo** - Crear, leer, actualizar y eliminar solicitudes
+- ✅ **Formularios inteligentes** - Validación en tiempo real
+- ✅ **Vista detallada** - Información completa de cada solicitud
+- ✅ **Filtrado y paginación** - DataTable con búsqueda avanzada
+- ✅ **Estados visuales** - Tags de colores según el estado
+
+### Gestión de Documentos
+- ✅ **CRUD completo** - Administración de documentos
+- ✅ **Iconos por tipo** - Visualización según extensión (PDF, DOCX, PNG, JPG)
+- ✅ **Vinculación** - Documentos asociados a solicitudes
+- ✅ **Vista previa** - Información detallada de cada documento
+
+### Interfaz de Usuario
+- ✅ **Diseño moderno** - UI limpia y profesional
+- ✅ **Responsive** - Funciona en móviles, tablets y desktop
+- ✅ **Tema personalizado** - Gradientes y colores corporativos
+- ✅ **Navegación intuitiva** - Menú hamburguesa y navbar
+- ✅ **Notificaciones** - Toast messages para feedback
+
+### Arquitectura
+- ✅ **Estado centralizado** - Pinia para gestión de estado
+- ✅ **Componentes reutilizables** - BaseButton, BaseForm, BaseField
+- ✅ **Composables** - Lógica compartida y reutilizable
+- ✅ **Normalización de datos** - Manejo de snake_case y camelCase
+- ✅ **Estilos compartidos** - CSS modular y mantenible
+
+---
+
+## 📸 Capturas de Pantalla
+
+### Vista Principal
+![Home](docs/screenshots/home.png)
+
+### Gestión de Solicitudes
+![Solicitudes](docs/screenshots/solicitudes.png)
+
+### Gestión de Documentos
+![Documentos](docs/screenshots/documentos.png)
+
+### Perfil del Autor
+![About](docs/screenshots/about.png)
 
 ---
 
@@ -39,270 +73,47 @@
 
 Antes de comenzar, asegúrate de tener instalado:
 
-- **Node.js** >= 16.x ([Descargar](https://nodejs.org/))
-- **npm** >= 8.x (viene con Node.js)
-- **yarn** >= 1.22 (opcional, recomendado)
+- **Node.js** >= 18.x ([Descargar](https://nodejs.org/))
+- **npm** >= 9.x (viene con Node.js)
+- **Backend API** corriendo en:
+  - Solicitudes: `http://localhost:8082`
+  - Documentos: `http://localhost:8083`
 
 ### Verificar instalación
 
 ```bash
-node --version   # Debe mostrar v16.x o superior
-npm --version    # Debe mostrar 8.x o superior
-yarn --version   # (Opcional) Debe mostrar 1.22 o superior
+node --version   # Debe mostrar v18.x o superior
+npm --version    # Debe mostrar 9.x o superior
 ```
 
 ---
 
-## 🚀 Instalación Rápida
+## 🚀 Instalación
 
-### Opción 1: Instalación Manual
+### 1. Clonar el repositorio
 
 ```bash
-# 1. Clonar el repositorio (si aplica)
-git clone <url-del-repo>
+git clone https://github.com/KarlaR3it/Solicitudes-documentos-Vue.git
 cd Solicitudes-documentos-Vue
+```
 
-# 2. Instalar dependencias
-yarn install
-# o
+### 2. Instalar dependencias
+
+```bash
 npm install
+```
 
-# 3. Iniciar servidor de desarrollo
-yarn dev
-# o
+### 3. Iniciar servidor de desarrollo
+
+```bash
 npm run dev
-
-# 4. Abrir en el navegador
-# http://localhost:5173
 ```
 
-### Opción 2: Con Makefile (Recomendado)
-
-```bash
-# Ver todos los comandos disponibles
-make help
-
-# Instalar e iniciar en un solo comando
-make start
-
-# O paso a paso
-make install    # Instalar dependencias
-make dev        # Iniciar servidor
-```
-
-### Opción 3: Con Docker
-
-```bash
-# Desarrollo
-docker-compose up frontend-dev
-
-# Producción
-docker-compose --profile production up frontend-prod
-```
-
----
-
-## 🛠️ Uso con Makefile
-
-El proyecto incluye un **Makefile** con comandos útiles:
-
-### Comandos Principales
-
-```bash
-make help           # Mostrar ayuda con todos los comandos
-make install        # Instalar dependencias
-make dev            # Iniciar servidor de desarrollo
-make build          # Compilar para producción
-make preview        # Vista previa del build
-make clean          # Limpiar archivos generados
-make reinstall      # Limpiar y reinstalar
-```
-
-### Comandos Docker
-
-```bash
-make docker-build          # Construir imagen Docker
-make docker-run            # Ejecutar contenedor
-make docker-compose-up     # Levantar con docker-compose
-make docker-compose-down   # Detener servicios
-make docker-compose-logs   # Ver logs
-```
-
-### Comandos de Información
-
-```bash
-make info           # Información del proyecto
-make check          # Verificar requisitos del sistema
-```
-
----
-
-## 🐳 Uso con Docker
-
-### Desarrollo
-
-```bash
-# Levantar solo el frontend en modo desarrollo
-docker-compose up frontend-dev
-
-# Con logs en tiempo real
-docker-compose up frontend-dev --build
-
-# En segundo plano
-docker-compose up -d frontend-dev
-```
-
-### Producción
-
-```bash
-# Levantar frontend en modo producción (Nginx)
-docker-compose --profile production up frontend-prod
-
-# Build y run
-docker-compose --profile production up --build frontend-prod
-```
-
-### Comandos Útiles
-
-```bash
-# Ver logs
-docker-compose logs -f frontend-dev
-
-# Detener servicios
-docker-compose down
-
-# Reconstruir imagen
-docker-compose build frontend-dev
-
-# Ejecutar comando dentro del contenedor
-docker-compose exec frontend-dev sh
-```
-
----
-
-## 📁 Estructura del Proyecto
+### 4. Abrir en el navegador
 
 ```
-Solicitudes-documentos-Vue/
-├── src/
-│   ├── stores/              # Estado global (Pinia)
-│   │   └── solicitudes.store.js
-│   ├── composables/         # Lógica reutilizable
-│   │   └── useFormSolicitud.js
-│   ├── components/
-│   │   ├── common/          # Componentes base
-│   │   │   ├── BaseForm.vue
-│   │   │   ├── BaseField.vue
-│   │   │   ├── BaseButton.vue
-│   │   │   ├── BaseModal.vue
-│   │   │   └── BaseFormSection.vue
-│   │   ├── shared/          # Componentes compartidos
-│   │   │   ├── NavBar.vue
-│   │   │   └── Menu.vue
-│   │   ├── solicitudes/     # Componentes de solicitudes
-│   │   │   ├── SolicitudForm.vue
-│   │   │   ├── SolicitudList.vue
-│   │   │   └── SolicitudDetail.vue
-│   │   └── documentos/      # Componentes de documentos
-│   │       └── DocumentoForm.vue
-│   ├── api/                 # Mock APIs (localStorage)
-│   │   ├── solicitud.js
-│   │   └── documento.js
-│   ├── utils/               # Utilidades
-│   │   └── constants.js
-│   ├── views/               # Vistas/Páginas
-│   │   └── Home.vue
-│   ├── styles/              # Estilos globales
-│   │   └── primevue-global.css
-│   ├── App.vue              # Componente raíz
-│   └── main.js              # Punto de entrada
-├── public/                  # Assets estáticos
-├── Makefile                 # Comandos útiles
-├── Dockerfile               # Configuración Docker
-├── docker-compose.yml       # Orquestación Docker
-├── nginx.conf               # Configuración Nginx
-├── vite.config.js           # Configuración Vite
-├── package.json             # Dependencias
-└── README.md                # Este archivo
+http://localhost:5173
 ```
-
----
-
-## 📜 Scripts Disponibles
-
-### Con yarn
-
-```bash
-yarn dev        # Iniciar servidor de desarrollo
-yarn build      # Compilar para producción
-yarn preview    # Vista previa del build
-```
-
-### Con npm
-
-```bash
-npm run dev        # Iniciar servidor de desarrollo
-npm run build      # Compilar para producción
-npm run preview    # Vista previa del build
-```
-
----
-
-## 🛠️ Tecnologías Utilizadas
-
-### Core
-
-- **[Vue 3](https://vuejs.org/)** - Framework JavaScript progresivo
-- **[Vite](https://vitejs.dev/)** - Build tool ultra-rápido
-- **[Pinia](https://pinia.vuejs.org/)** - State management oficial de Vue
-
-### UI/UX
-
-- **[PrimeVue](https://primevue.org/)** - Librería de componentes UI
-- **[PrimeIcons](https://primevue.org/icons)** - Iconos
-- **[Aura Theme](https://primevue.org/theming/)** - Tema moderno
-
-### Utilidades
-
-- **[Axios](https://axios-http.com/)** - Cliente HTTP
-- **[Lodash](https://lodash.com/)** - Utilidades JavaScript
-- **[Moment.js](https://momentjs.com/)** - Manejo de fechas
-- **[UUID](https://github.com/uuidjs/uuid)** - Generación de IDs únicos
-
-### DevOps
-
-- **[Docker](https://www.docker.com/)** - Containerización
-- **[Nginx](https://nginx.org/)** - Servidor web para producción
-
----
-
-## 🎯 Uso del Sistema
-
-### 1. Crear una Solicitud
-
-1. Navega a la sección "Solicitudes"
-2. Haz clic en "Nueva Solicitud"
-3. Llena el formulario con los datos requeridos
-4. Haz clic en "Crear Solicitud"
-
-### 2. Ver Solicitudes
-
-- La lista se muestra automáticamente en la vista de Solicitudes
-- Usa la paginación para navegar entre páginas
-- Haz clic en cualquier fila para ver el detalle
-
-### 3. Editar una Solicitud
-
-1. Haz clic en una solicitud para ver su detalle
-2. Haz clic en el botón "Editar"
-3. Modifica los campos necesarios
-4. Haz clic en "Actualizar Solicitud"
-
-### 4. Eliminar una Solicitud
-
-1. Haz clic en una solicitud para ver su detalle
-2. Haz clic en el botón "Eliminar"
-3. La solicitud se eliminará inmediatamente
 
 ---
 
@@ -310,92 +121,266 @@ npm run preview    # Vista previa del build
 
 ### Variables de Entorno
 
-Crea un archivo `.env` en la raíz del proyecto:
+Crea un archivo `.env` en la raíz del proyecto (opcional):
 
 ```env
-# URLs del backend (cuando esté conectado)
+# URLs del backend
 VITE_API_SOLICITUDES_URL=http://localhost:8082
 VITE_API_DOCUMENTOS_URL=http://localhost:8083
-
-# Modo de desarrollo
-VITE_MODE=development
 ```
 
-### Configuración de Vite
+### Configuración del Backend
 
-Edita `vite.config.js` para personalizar:
+Asegúrate de que los servicios backend estén corriendo:
 
-```javascript
-export default defineConfig({
-  server: {
-    port: 5173,
-    host: true
-  },
-  build: {
-    outDir: 'dist'
-  }
-})
+```bash
+# Servicio de Solicitudes (Puerto 8082)
+# Servicio de Documentos (Puerto 8083)
+```
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+solicitudes-vue/
+├── src/
+│   ├── assets/                  # Recursos estáticos
+│   │   ├── profile-photo.jpeg   # Foto de perfil
+│   │   └── styles/              # Estilos compartidos
+│   │       └── dialog-buttons.css
+│   ├── components/
+│   │   ├── common/              # Componentes base reutilizables
+│   │   │   ├── BaseButton.vue
+│   │   │   ├── BaseField.vue
+│   │   │   ├── BaseForm.vue
+│   │   │   ├── BaseFormSection.vue
+│   │   │   ├── BaseModal.vue
+│   │   │   └── FileIcon.vue
+│   │   ├── shared/              # Componentes compartidos
+│   │   │   ├── NavBar.vue
+│   │   │   ├── Menu.vue
+│   │   │   └── Footer.vue
+│   │   ├── solicitudes/         # Módulo de solicitudes
+│   │   │   ├── SolicitudForm.vue
+│   │   │   ├── SolicitudList.vue
+│   │   │   └── SolicitudDetail.vue
+│   │   ├── documentos/          # Módulo de documentos
+│   │   │   ├── DocumentoForm.vue
+│   │   │   ├── DocumentoList.vue
+│   │   │   └── DocumentoDetail.vue
+│   │   └── About.vue            # Perfil del autor
+│   ├── composables/             # Lógica reutilizable
+│   │   └── useFormSolicitud.js
+│   ├── stores/                  # Estado global (Pinia)
+│   │   ├── solicitudes.store.js
+│   │   └── documentos.store.js
+│   ├── utils/                   # Utilidades
+│   │   └── normalizers.js       # Normalización de datos
+│   ├── views/                   # Vistas principales
+│   │   └── Home.vue
+│   ├── styles/                  # Estilos globales
+│   │   └── primevue-global.css
+│   ├── App.vue                  # Componente raíz
+│   └── main.js                  # Punto de entrada
+├── public/                      # Assets públicos
+├── index.html                   # HTML principal
+├── vite.config.js               # Configuración Vite
+├── package.json                 # Dependencias
+└── README.md                    # Este archivo
+```
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+### Frontend Core
+- **[Vue 3](https://vuejs.org/)** (v3.5) - Framework JavaScript progresivo con Composition API
+- **[Vite](https://vitejs.dev/)** (v7.1) - Build tool ultra-rápido con HMR
+- **[Pinia](https://pinia.vuejs.org/)** (v3.0) - State management oficial de Vue
+
+### UI/UX
+- **[PrimeVue](https://primevue.org/)** (v4.4) - Librería de componentes UI empresariales
+- **[PrimeIcons](https://primevue.org/icons)** - Conjunto de iconos
+- **[Aura Theme](https://primevue.org/theming/)** - Tema moderno y personalizable
+
+### Utilidades
+- **[Axios](https://axios-http.com/)** - Cliente HTTP para comunicación con backend
+- **[Moment.js](https://momentjs.com/)** - Manejo y formateo de fechas
+
+### DevOps
+- **[ESLint](https://eslint.org/)** - Linter para código JavaScript
+- **[Prettier](https://prettier.io/)** - Formateador de código
+
+---
+
+## 📜 Scripts Disponibles
+
+```bash
+# Desarrollo
+npm run dev          # Iniciar servidor de desarrollo (puerto 5173)
+
+# Producción
+npm run build        # Compilar para producción
+npm run preview      # Vista previa del build de producción
+
+# Calidad de código
+npm run lint         # Ejecutar linter
+npm run format       # Formatear código
+```
+
+---
+
+## 🎯 Funcionalidades Principales
+
+### 1. Gestión de Solicitudes
+
+#### Crear Solicitud
+- Formulario completo con validaciones
+- Campos: título, descripción, área, país, localización, estado
+- Detalles del puesto: vacantes, experiencia, educación
+- Condiciones laborales: salario, modalidad, tipo de servicio
+
+#### Listar Solicitudes
+- DataTable con paginación
+- Búsqueda y filtrado
+- Ordenamiento por columnas
+- Vista rápida con tags de estado
+
+#### Ver Detalle
+- Modal con información completa
+- Secciones organizadas
+- Formato de moneda y fechas
+- Acciones: editar y eliminar
+
+### 2. Gestión de Documentos
+
+#### Crear Documento
+- Vinculación con solicitudes
+- Soporte para múltiples formatos
+- Validación de campos
+
+#### Listar Documentos
+- Iconos visuales por tipo de archivo
+- Información de solicitud asociada
+- Acciones rápidas
+
+#### Ver Detalle
+- Información del documento
+- Extensión con tag de color
+- Acciones: editar y eliminar
+
+### 3. Perfil del Autor
+
+- Información personal y profesional
+- Habilidades técnicas organizadas
+- Enlaces a redes sociales
+- Intereses y áreas de especialización
+
+---
+
+## 🔄 Flujo de Datos
+
+```
+┌─────────────┐
+│   Backend   │
+│  (API REST) │
+└──────┬──────┘
+       │
+       │ HTTP (Axios)
+       │
+┌──────▼──────┐
+│   Stores    │
+│   (Pinia)   │
+└──────┬──────┘
+       │
+       │ State
+       │
+┌──────▼──────┐
+│ Components  │
+│    (Vue)    │
+└─────────────┘
+```
+
+---
+
+## 🎨 Guía de Estilos
+
+### Colores Principales
+- **Primary**: `#4f46e5` (Índigo)
+- **Secondary**: `#06b6d4` (Cyan)
+- **Success**: `#10b981` (Verde)
+- **Warning**: `#f59e0b` (Naranja)
+- **Danger**: `#ef4444` (Rojo)
+
+### Gradientes
+```css
+background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
 ```
 
 ---
 
 ## 🐛 Solución de Problemas
 
-### Error: "Cannot find module"
-
+### Error: "Cannot connect to backend"
 ```bash
-# Limpiar y reinstalar
-make reinstall
-# o
-rm -rf node_modules && yarn install
+# Verificar que los servicios backend estén corriendo
+# Solicitudes: http://localhost:8082
+# Documentos: http://localhost:8083
 ```
 
 ### Error: "Port 5173 already in use"
-
 ```bash
 # Cambiar puerto en vite.config.js
-server: { port: 3000 }
+export default defineConfig({
+  server: { port: 3000 }
+})
 ```
 
-### Docker: "Cannot connect to Docker daemon"
-
+### Error: "Module not found"
 ```bash
-# Iniciar Docker Desktop (Windows/Mac)
-# o iniciar servicio Docker (Linux)
-sudo systemctl start docker
+# Limpiar y reinstalar dependencias
+rm -rf node_modules package-lock.json
+npm install
 ```
 
 ---
 
-## 📚 Documentación Adicional
+## 📚 Recursos Adicionales
 
-- [PROGRESO-SESION-1.md](./PROGRESO-SESION-1.md) - Progreso de desarrollo
-- [ROADMAP.md](./ROADMAP.md) - Plan de desarrollo
 - [Documentación Vue 3](https://vuejs.org/guide/introduction.html)
 - [Documentación Pinia](https://pinia.vuejs.org/introduction.html)
 - [Documentación PrimeVue](https://primevue.org/setup)
+- [Guía de Vite](https://vitejs.dev/guide/)
 
 ---
 
 ## 👨‍💻 Autor
 
-**[Tu Nombre]**  
-Proyecto académico - [Nombre de la Universidad]
+**Karla Ramírez**  
+Desarrolladora Full Stack Trainee  
+📧 [karla.ramirez@3it.cl](mailto:karla.ramirez@3it.cl)  
+💼 [LinkedIn](https://linkedin.com/in/karla-r-4b3802194)  
+🐙 [GitHub](https://github.com/KarlaR3it)
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto es de uso académico.
+Este proyecto es de uso académico y profesional.
 
 ---
 
 ## 🙏 Agradecimientos
 
-- Instructor: Fernando Herrera (Klerith) - Patrón de arquitectura
-- Comunidad Vue.js
-- Documentación oficial de PrimeVue
+- Comunidad Vue.js por el excelente framework
+- PrimeVue por los componentes UI de calidad
+- Equipo de 3IT por el apoyo y mentoría
 
 ---
 
-**¿Problemas?** Abre un issue o contacta al autor.
+**¿Preguntas o sugerencias?** No dudes en contactarme.
+
+---
+
+**Última actualización**: Octubre 2025

@@ -3,6 +3,7 @@
     :visible="visible"
     :modal="true"
     :closable="true"
+    :dismissableMask="true"
     :style="{ width: '600px' }"
     @update:visible="$emit('close')"
   >
@@ -13,31 +14,31 @@
       </div>
     </template>
 
-    <div v-if="documento" class="documento-detail">
+    <div v-if="normalizedDocumento" class="documento-detail">
       <div class="detail-section">
         <h3 class="section-title">Información Básica</h3>
 
         <div class="detail-field">
           <label>ID</label>
-          <span>{{ documento.id }}</span>
+          <span>{{ normalizedDocumento.id }}</span>
         </div>
 
         <div class="detail-field">
           <label>Solicitud ID</label>
-          <span>{{ documento.solicitudId }}</span>
+          <span>{{ normalizedDocumento.solicitudId || 'N/A' }}</span>
         </div>
 
         <div class="detail-field">
           <label>Nombre del Archivo</label>
           <span class="file-name">
-            <i :class="`pi ${getExtensionIcon(documento.extension)}`"></i>
-            {{ documento.nombreArchivo }}.{{ documento.extension }}
+            <i :class="`pi ${getExtensionIcon(normalizedDocumento.extension)}`"></i>
+            {{ normalizedDocumento.nombreArchivo }}.{{ normalizedDocumento.extension }}
           </span>
         </div>
 
         <div class="detail-field">
           <label>Extensión</label>
-          <Tag :value="documento.extension.toUpperCase()" :severity="getExtensionSeverity(documento.extension)" />
+          <Tag :value="normalizedDocumento.extension.toUpperCase()" :severity="getExtensionSeverity(normalizedDocumento.extension)" />
         </div>
       </div>
     </div>
@@ -45,23 +46,22 @@
     <template #footer>
       <div class="dialog-footer">
         <BaseButton
-          label="Cerrar"
-          icon="pi pi-times"
-          variant="secondary"
-          outlined
-          @click="$emit('close')"
-        />
-        <BaseButton
           label="Editar"
           icon="pi pi-pencil"
           variant="warning"
-          @click="$emit('edit', documento)"
+          @click="$emit('edit', normalizedDocumento)"
         />
         <BaseButton
           label="Eliminar"
           icon="pi pi-trash"
           variant="danger"
-          @click="$emit('delete', documento)"
+          @click="$emit('delete', normalizedDocumento)"
+        />
+        <BaseButton
+          label="Cerrar"
+          icon="pi pi-times"
+          variant="secondary"
+          @click="$emit('close')"
         />
       </div>
     </template>
@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import { computed } from "vue";
 import Dialog from "primevue/dialog";
 import Tag from "primevue/tag";
 import BaseButton from "../common/BaseButton.vue";
@@ -84,7 +85,24 @@ export default {
     documento: Object,
   },
   emits: ["close", "edit", "delete"],
-  setup() {
+  setup(props) {
+    // Normalizar datos del documento (convertir snake_case a camelCase)
+    const normalizedDocumento = computed(() => {
+      if (!props.documento) return null;
+      
+      // Intentar obtener solicitudId de diferentes fuentes
+      const solicitudId = props.documento.solicitudId 
+        ?? props.documento.solicitud_id 
+        ?? props.documento.solicitud?.id
+        ?? props.documento.solicitud?.solicitud_id;
+      
+      return {
+        ...props.documento,
+        solicitudId: solicitudId,
+        nombreArchivo: props.documento.nombreArchivo ?? props.documento.nombre_archivo,
+      };
+    });
+
     const getExtensionIcon = (extension) => {
       const icons = {
         pdf: "pi-file-pdf",
@@ -106,6 +124,7 @@ export default {
     };
 
     return {
+      normalizedDocumento,
       getExtensionIcon,
       getExtensionSeverity,
     };
@@ -170,12 +189,6 @@ export default {
 
 .file-name i {
   font-size: 1.2rem;
-}
-
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
 }
 
 @media (max-width: 768px) {

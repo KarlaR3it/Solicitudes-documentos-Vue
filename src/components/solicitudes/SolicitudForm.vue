@@ -245,15 +245,17 @@
       <BaseField
         label="Usuario ID"
         required
-        hint="ID del usuario responsable de la solicitud"
+        :hint="editMode ? '⚠️ El ID de usuario no se puede modificar' : 'ID del usuario responsable de la solicitud'"
         :error="errors.usuarioId"
       >
         <InputNumber
           v-model="solicitud.usuarioId"
           placeholder="ID del usuario"
           :min="1"
+          :disabled="editMode"
           class="w-full"
           :class="{ 'p-invalid': errors.usuarioId }"
+          v-tooltip="editMode ? 'El ID de usuario no puede ser modificado después de crear la solicitud' : ''"
         />
       </BaseField>
     </BaseFormSection>
@@ -692,6 +694,34 @@ export default {
       if (!validateForm()) {
         const errorMessages = Object.values(errors.value);
         const errorCount = errorMessages.length;
+        const errorFields = Object.keys(errors.value);
+        
+        // Mapeo de nombres técnicos a nombres amigables
+        const fieldLabels = {
+          titulo: "Título",
+          estado: "Estado",
+          area: "Área",
+          areaOtra: "Especifica el área",
+          pais: "País",
+          paisOtro: "Especifica el país",
+          localizacion: "Localización",
+          descripcion: "Descripción",
+          numeroVacantes: "Número de Vacantes",
+          nivelExperiencia: "Nivel de Experiencia",
+          baseEducacional: "Base Educacional",
+          conocimientosExcluyentes: "Conocimientos Excluyentes",
+          rentaDesde: "Renta Desde",
+          rentaHasta: "Renta Hasta",
+          modalidadTrabajo: "Modalidad de Trabajo",
+          tipoServicio: "Tipo de Servicio",
+          fechaInicioProyecto: "Fecha Inicio Proyecto",
+          usuarioId: "Usuario ID",
+        };
+        
+        // Crear lista de campos con error
+        const fieldList = errorFields
+          .map(field => `• ${fieldLabels[field] || field}`)
+          .join('\n');
         
         // Detectar tipo de errores
         const hasInvalidCharacters = errorMessages.some(msg => 
@@ -708,31 +738,44 @@ export default {
         );
         
         // Mensaje específico según el tipo de error
-        let summary = "Formulario incompleto";
+        let summary = "⚠️ Formulario incompleto";
         let detail = "";
         
         if (hasInvalidCharacters) {
-          summary = "Caracteres no permitidos";
-          detail = `Se detectaron caracteres inválidos en ${errorCount} campo${errorCount > 1 ? 's' : ''}. Por favor revisa los campos marcados en rojo.`;
+          summary = "❌ Caracteres no permitidos";
+          detail = `Se detectaron caracteres inválidos en ${errorCount} campo${errorCount > 1 ? 's' : ''}:\n\n${fieldList}\n\nPor favor, revisa y corrige los campos marcados en rojo.`;
         } else if (hasEmptyFields) {
-          summary = "Campos obligatorios vacíos";
-          detail = `Faltan ${errorCount} campo${errorCount > 1 ? 's' : ''} obligatorio${errorCount > 1 ? 's' : ''}. Por favor completa los campos marcados en rojo.`;
+          summary = "📝 Campos obligatorios faltantes";
+          detail = `Debes completar ${errorCount} campo${errorCount > 1 ? 's' : ''} obligatorio${errorCount > 1 ? 's' : ''}:\n\n${fieldList}\n\nCompleta todos los campos marcados con * para continuar.`;
         } else if (hasLengthErrors) {
-          summary = "Error en longitud de texto";
-          detail = `Algunos campos exceden el límite de caracteres permitido. Por favor revisa los campos marcados en rojo.`;
+          summary = "📏 Error en longitud de texto";
+          detail = `Los siguientes campos exceden el límite de caracteres:\n\n${fieldList}\n\nPor favor, reduce el texto en estos campos.`;
         } else if (hasRangeErrors) {
-          summary = "Error en valores numéricos";
-          detail = "Algunos valores numéricos son inválidos. Por favor revisa los campos marcados en rojo.";
+          summary = "🔢 Error en valores numéricos";
+          detail = `Los siguientes campos tienen valores inválidos:\n\n${fieldList}\n\nVerifica que los números sean correctos.`;
         } else {
-          detail = `Hay ${errorCount} error${errorCount > 1 ? 'es' : ''} en el formulario. Por favor corrige los campos marcados en rojo.`;
+          detail = `Hay ${errorCount} error${errorCount > 1 ? 'es' : ''} en el formulario:\n\n${fieldList}\n\nCorrige los campos marcados en rojo para continuar.`;
         }
         
         toast.add({
-          severity: "error",
+          severity: "warn",
           summary: summary,
           detail: detail,
-          life: 5000,
+          life: 7000,
         });
+        
+        // Hacer scroll al primer campo con error
+        setTimeout(() => {
+          const firstErrorField = document.querySelector('.p-invalid');
+          if (firstErrorField) {
+            firstErrorField.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center' 
+            });
+            firstErrorField.focus();
+          }
+        }, 100);
+        
         return;
       }
 
@@ -764,9 +807,27 @@ export default {
         // Crear o actualizar según el modo
         if (props.editMode && props.solicitudToEdit) {
           // MODO EDICIÓN
+          
+          // Validación adicional: verificar que el usuario_id no haya cambiado
+          const originalUsuarioId = props.solicitudToEdit.usuarioId || props.solicitudToEdit.usuario_id;
+          if (solicitudData.usuario_id !== originalUsuarioId) {
+            toast.add({
+              severity: "error",
+              summary: "⚠️ Modificación no permitida",
+              detail: "El ID de usuario no puede ser modificado. Este campo es inmutable después de crear la solicitud.",
+              life: 5000,
+            });
+            loading.value = false;
+            return;
+          }
+          
+          // Remover usuario_id del objeto antes de enviar al PATCH
+          // El backend no permite modificar este campo
+          const { usuario_id, ...solicitudDataSinUsuarioId } = solicitudData;
+          
           await solicitudesStore.updateSolicitud(
             props.solicitudToEdit.id,
-            solicitudData
+            solicitudDataSinUsuarioId
           );
           
           toast.add({

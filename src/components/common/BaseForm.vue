@@ -30,7 +30,6 @@
               :label="submitLabel"
               :icon="submitIcon"
               variant="primary"
-              :disabled="!isValid"
               :loading="loading"
             />
           </div>
@@ -81,7 +80,7 @@ export default {
   emits: ["submit", "cancel"],
   methods: {
     handleSubmit() {
-      if (this.isValid && !this.loading) {
+      if (!this.loading) {
         this.$emit("submit");
       }
     },

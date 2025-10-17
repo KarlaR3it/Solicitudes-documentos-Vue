@@ -1,4 +1,14 @@
 <template>
+  <!-- Diálogo de confirmación de eliminación -->
+  <BaseConfirm
+    v-model:visible="showConfirmDelete"
+    header="Confirmar Eliminación"
+    :message="`¿Estás seguro de eliminar la solicitud <strong>${normalizedSolicitud?.titulo}</strong>?`"
+    cancelLabel="Cancelar"
+    confirmLabel="Eliminar"
+    @confirm="confirmDelete"
+  />
+
   <Dialog
     :visible="visible"
     @update:visible="$emit('update:visible', $event)"
@@ -15,7 +25,7 @@
       </div>
     </template>
 
-    <div v-if="solicitud" class="solicitud-detail-content">
+    <div v-if="normalizedSolicitud" class="solicitud-detail-content">
       <!-- Información Básica -->
       <div class="detail-section">
         <h4 class="section-title">Información Básica</h4>
@@ -23,7 +33,7 @@
           <div class="col-12">
             <div class="detail-field">
               <label class="field-label">Título</label>
-              <p class="field-value title-highlight">{{ solicitud.titulo }}</p>
+              <p class="field-value title-highlight">{{ normalizedSolicitud.titulo }}</p>
             </div>
           </div>
 
@@ -32,8 +42,8 @@
               <label class="field-label">Estado</label>
               <div class="field-value">
                 <Tag
-                  :value="solicitud.estado"
-                  :severity="getEstadoSeverity(solicitud.estado)"
+                  :value="normalizedSolicitud.estado"
+                  :severity="getEstadoSeverity(normalizedSolicitud.estado)"
                   class="estado-tag"
                 />
               </div>
@@ -43,21 +53,21 @@
           <div class="col-12 md:col-6">
             <div class="detail-field">
               <label class="field-label">Área</label>
-              <p class="field-value">{{ solicitud.area }}</p>
+              <p class="field-value">{{ normalizedSolicitud.area }}</p>
             </div>
           </div>
 
           <div class="col-12 md:col-6">
             <div class="detail-field">
               <label class="field-label">País</label>
-              <p class="field-value">{{ solicitud.pais }}</p>
+              <p class="field-value">{{ normalizedSolicitud.pais }}</p>
             </div>
           </div>
 
           <div class="col-12 md:col-6">
             <div class="detail-field">
               <label class="field-label">Localización</label>
-              <p class="field-value">{{ solicitud.localizacion }}</p>
+              <p class="field-value">{{ normalizedSolicitud.localizacion }}</p>
             </div>
           </div>
 
@@ -65,7 +75,7 @@
             <div class="detail-field">
               <label class="field-label">Descripción</label>
               <p class="field-value description-text">
-                {{ solicitud.descripcion }}
+                {{ normalizedSolicitud.descripcion }}
               </p>
             </div>
           </div>
@@ -81,7 +91,7 @@
               <label class="field-label">Número de Vacantes</label>
               <div class="field-value">
                 <Badge
-                  :value="solicitud.numeroVacantes"
+                  :value="normalizedSolicitud.numeroVacantes"
                   severity="info"
                   class="vacantes-badge"
                 />
@@ -92,7 +102,7 @@
           <div class="col-12 md:col-6">
             <div class="detail-field">
               <label class="field-label">Nivel de Experiencia</label>
-              <p class="field-value">{{ solicitud.nivelExperiencia }}</p>
+              <p class="field-value">{{ normalizedSolicitud.nivelExperiencia }}</p>
             </div>
           </div>
 
@@ -100,7 +110,7 @@
             <div class="detail-field">
               <label class="field-label">Base Educacional</label>
               <p class="field-value description-text">
-                {{ solicitud.baseEducacional }}
+                {{ normalizedSolicitud.baseEducacional }}
               </p>
             </div>
           </div>
@@ -109,7 +119,7 @@
             <div class="detail-field">
               <label class="field-label">Conocimientos Excluyentes</label>
               <p class="field-value description-text">
-                {{ solicitud.conocimientosExcluyentes }}
+                {{ normalizedSolicitud.conocimientosExcluyentes }}
               </p>
             </div>
           </div>
@@ -125,11 +135,11 @@
               <label class="field-label">Rango Salarial</label>
               <div class="field-value salary-range">
                 <span class="salary-amount">{{
-                  formatCurrency(solicitud.rentaDesde)
+                  formatCurrency(normalizedSolicitud.rentaDesde)
                 }}</span>
                 <span class="salary-separator">-</span>
                 <span class="salary-amount">{{
-                  formatCurrency(solicitud.rentaHasta)
+                  formatCurrency(normalizedSolicitud.rentaHasta)
                 }}</span>
               </div>
             </div>
@@ -140,8 +150,8 @@
               <label class="field-label">Modalidad de Trabajo</label>
               <div class="field-value">
                 <Tag
-                  :value="solicitud.modalidadTrabajo"
-                  :severity="getModalidadSeverity(solicitud.modalidadTrabajo)"
+                  :value="normalizedSolicitud.modalidadTrabajo"
+                  :severity="getModalidadSeverity(normalizedSolicitud.modalidadTrabajo)"
                 />
               </div>
             </div>
@@ -150,7 +160,7 @@
           <div class="col-12 md:col-6">
             <div class="detail-field">
               <label class="field-label">Tipo de Servicio</label>
-              <p class="field-value">{{ solicitud.tipoServicio }}</p>
+              <p class="field-value">{{ normalizedSolicitud.tipoServicio }}</p>
             </div>
           </div>
 
@@ -159,17 +169,17 @@
               <label class="field-label">Fecha Inicio Proyecto</label>
               <div class="field-value">
                 <i class="pi pi-calendar mr-2 text-primary"></i>
-                {{ formatDate(solicitud.fechaInicioProyecto) }}
+                {{ formatDate(normalizedSolicitud.fechaInicioProyecto) }}
               </div>
             </div>
           </div>
 
           <div class="col-12 md:col-6">
             <div class="detail-field">
-              <label class="field-label">Usuario Responsable</label>
+              <label class="field-label">ID del Usuario</label>
               <div class="field-value">
                 <i class="pi pi-user mr-2 text-primary"></i>
-                ID: {{ solicitud.usuarioId }}
+                ID: {{ normalizedSolicitud.usuarioId }}
               </div>
             </div>
           </div>
@@ -179,7 +189,7 @@
               <label class="field-label">Fecha de Creación</label>
               <div class="field-value">
                 <i class="pi pi-clock mr-2 text-400"></i>
-                {{ formatDateComplete(solicitud.createdAt) }}
+                {{ formatDateComplete(normalizedSolicitud.createdAt) }}
               </div>
             </div>
           </div>
@@ -188,28 +198,23 @@
     </div>
 
     <template #footer>
-      <div class="flex justify-content-between align-items-center gap-2">
-        <div class="flex gap-2">
-          <Button
-            label="Editar"
-            icon="pi pi-pencil"
-            severity="warning"
-            @click="editSolicitud"
-            class="btn-warning"
-          />
-          <Button
-            label="Eliminar"
-            icon="pi pi-trash"
-            severity="danger"
-            @click="deleteSolicitud"
-            class="btn-danger"
-          />
-        </div>
-
-        <Button
+      <div class="dialog-footer">
+        <BaseButton
+          label="Editar"
+          icon="pi pi-pencil"
+          variant="warning"
+          @click="editSolicitud"
+        />
+        <BaseButton
+          label="Eliminar"
+          icon="pi pi-trash"
+          variant="danger"
+          @click="deleteSolicitud"
+        />
+        <BaseButton
           label="Cerrar"
           icon="pi pi-times"
-          severity="secondary"
+          variant="secondary"
           @click="closeDialog"
         />
       </div>
@@ -224,11 +229,15 @@ import moment from "moment";
 import "moment/locale/es";
 import Tag from "primevue/tag";
 import Badge from "primevue/badge";
+import BaseButton from "../common/BaseButton.vue";
+import BaseConfirm from "../common/BaseConfirm.vue";
 
 export default {
   components: {
     Tag,
     Badge,
+    BaseButton,
+    BaseConfirm,
   },
   props: {
     solicitud: {
@@ -243,6 +252,26 @@ export default {
   emits: ["update:visible", "edit", "delete"],
   setup(props, { emit }) {
     const toast = useToast();
+    const showConfirmDelete = ref(false);
+
+    // Normalizar datos de la solicitud (convertir snake_case a camelCase)
+    const normalizedSolicitud = computed(() => {
+      if (!props.solicitud) return null;
+      
+      return {
+        ...props.solicitud,
+        numeroVacantes: props.solicitud.numeroVacantes || props.solicitud.numero_vacantes,
+        nivelExperiencia: props.solicitud.nivelExperiencia || props.solicitud.nivel_experiencia,
+        baseEducacional: props.solicitud.baseEducacional || props.solicitud.base_educacional,
+        conocimientosExcluyentes: props.solicitud.conocimientosExcluyentes || props.solicitud.conocimientos_excluyentes,
+        rentaDesde: props.solicitud.rentaDesde || props.solicitud.renta_desde,
+        rentaHasta: props.solicitud.rentaHasta || props.solicitud.renta_hasta,
+        modalidadTrabajo: props.solicitud.modalidadTrabajo || props.solicitud.modalidad_trabajo,
+        tipoServicio: props.solicitud.tipoServicio || props.solicitud.tipo_servicio,
+        fechaInicioProyecto: props.solicitud.fechaInicioProyecto || props.solicitud.fecha_inicio_proyecto,
+        usuarioId: props.solicitud.usuarioId || props.solicitud.usuario_id,
+      };
+    });
 
     const closeDialog = () => {
       emit("update:visible", false);
@@ -250,17 +279,22 @@ export default {
 
     const editSolicitud = () => {
       // Emitir evento edit con los datos de la solicitud
-      emit("edit", props.solicitud);
+      emit("edit", normalizedSolicitud.value);
       closeDialog();
     };
 
     const deleteSolicitud = () => {
-      // Eliminación directa sin confirmación
+      // Mostrar diálogo de confirmación
+      showConfirmDelete.value = true;
+    };
+
+    const confirmDelete = () => {
+      // Eliminar después de confirmar
       emit("delete", props.solicitud.id);
       closeDialog();
       toast.add({
         severity: "success",
-        summary: "Solicitud eliminada",
+        summary: "✅ Solicitud eliminada",
         detail: "La solicitud fue eliminada correctamente",
         life: 3000,
       });
@@ -305,9 +339,12 @@ export default {
     };
 
     return {
+      normalizedSolicitud,
+      showConfirmDelete,
       closeDialog,
       editSolicitud,
       deleteSolicitud,
+      confirmDelete,
       getEstadoSeverity,
       getModalidadSeverity,
       formatCurrency,
@@ -405,26 +442,6 @@ export default {
 .vacantes-badge {
   font-size: 1rem;
   padding: 0.5rem 1rem;
-}
-
-.btn-warning {
-  background: var(--p-orange-500);
-  border-color: var(--p-orange-500);
-}
-
-.btn-warning:hover {
-  background: var(--p-orange-600);
-  border-color: var(--p-orange-600);
-}
-
-.btn-danger {
-  background: var(--p-red-500);
-  border-color: var(--p-red-500);
-}
-
-.btn-danger:hover {
-  background: var(--p-red-600);
-  border-color: var(--p-red-600);
 }
 
 /* Responsive */
