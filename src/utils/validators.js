@@ -110,8 +110,8 @@ export const validateText = (value, {
   
   // Modo estricto: solo caracteres alfanuméricos y símbolos básicos seguros
   if (strictMode) {
-    // Permite: letras (con acentos), números, espacios, puntos, comas, guiones, paréntesis, +, #, @
-    const safePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.,\-()#+@]*$/;
+    // Permite: letras (con acentos), números, espacios, puntos, guiones y guión bajo
+    const safePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s.\-_]*$/;
     if (!safePattern.test(trimmedValue)) {
       return {
         isValid: false,

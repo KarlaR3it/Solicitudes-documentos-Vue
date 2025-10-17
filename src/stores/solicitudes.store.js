@@ -62,7 +62,8 @@ export const useSolicitudesStore = defineStore('solicitudes', () => {
     
     try {
       // Obtener solicitudes y ordenar de más reciente a más antigua
-      solicitudes.value = getSolicitudesApi().reverse()
+      const data = await getSolicitudesApi()
+      solicitudes.value = data.reverse()
     } catch (err) {
       error.value = err.message || 'Error al cargar solicitudes'
       console.error('Error en fetchSolicitudes:', err)
@@ -80,7 +81,7 @@ export const useSolicitudesStore = defineStore('solicitudes', () => {
     error.value = null
     
     try {
-      saveSolicitudApi(solicitudData)
+      await saveSolicitudApi(solicitudData)
       // Recargar solicitudes después de crear
       await fetchSolicitudes()
       return { success: true }
@@ -141,7 +142,7 @@ export const useSolicitudesStore = defineStore('solicitudes', () => {
     error.value = null
     
     try {
-      deleteSolicitudApi(id)
+      await deleteSolicitudApi(id)
       // Recargar solicitudes después de eliminar
       await fetchSolicitudes()
       return { success: true }

@@ -739,26 +739,27 @@ export default {
       loading.value = true;
 
       try {
-        // Preparar datos para envío
+        // Preparar datos para envío - Convertir a snake_case para el backend
         const solicitudData = {
-          ...solicitud,
           titulo: solicitud.titulo.trim(),
-          descripcion: solicitud.descripcion.trim(),
-          baseEducacional: solicitud.baseEducacional.trim(),
-          conocimientosExcluyentes: solicitud.conocimientosExcluyentes.trim(),
-          localizacion: solicitud.localizacion?.trim() || "",
-          // Si seleccionó "Otra" en área, enviar el valor de areaOtra
+          estado: solicitud.estado,
           area: solicitud.area === "Otra" ? solicitud.areaOtra.trim() : solicitud.area,
-          // Si seleccionó "Otro" en país, enviar el valor de paisOtro
           pais: solicitud.pais === "Otro" ? solicitud.paisOtro.trim() : solicitud.pais,
-          fechaInicioProyecto: solicitud.fechaInicioProyecto
+          localizacion: solicitud.localizacion?.trim() || "",
+          numero_vacantes: solicitud.numeroVacantes,
+          descripcion: solicitud.descripcion.trim(),
+          base_educacional: solicitud.baseEducacional.trim(),
+          conocimientos_excluyentes: solicitud.conocimientosExcluyentes.trim(),
+          renta_desde: solicitud.rentaDesde,
+          renta_hasta: solicitud.rentaHasta,
+          modalidad_trabajo: solicitud.modalidadTrabajo,
+          tipo_servicio: solicitud.tipoServicio,
+          nivel_experiencia: solicitud.nivelExperiencia,
+          fecha_inicio_proyecto: solicitud.fechaInicioProyecto
             .toISOString()
             .split("T")[0],
+          usuario_id: solicitud.usuarioId,
         };
-        
-        // Eliminar campos auxiliares que no se envían al backend
-        delete solicitudData.areaOtra;
-        delete solicitudData.paisOtro;
 
         // Crear o actualizar según el modo
         if (props.editMode && props.solicitudToEdit) {

@@ -1,39 +1,47 @@
-import { v4 as uuidv4} from 'uuid';
-import { SOLICITUDES } from '../utils/constants';
-import size from 'lodash/size';
-import remove from 'lodash/remove';
+import axios from 'axios';
 
-export function saveSolicitudApi(solicitudData) {
-    const solicitudes = getSolicitudesApi();
-    
-    // Crear la solicitud completa con ID y timestamps
-    const nuevaSolicitud = {
-        id: uuidv4(),
-        ...solicitudData,
-        createdAt: new Date(),
-        updatedAt: new Date()
-    };
+const API_URL = 'http://localhost:8082/solicitudes';
 
-    if (size(solicitudes) === 0) {
-        const solicitudesArray = [nuevaSolicitud];
-        localStorage.setItem(SOLICITUDES, JSON.stringify(solicitudesArray));
-    } else {
-        solicitudes.push(nuevaSolicitud);
-        localStorage.setItem(SOLICITUDES, JSON.stringify(solicitudes));
+// Crear una nueva solicitud
+export async function saveSolicitudApi(solicitudData) {
+    try {
+        const response = await axios.post(API_URL, solicitudData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al guardar solicitud:', error);
+        throw error;
     }
 }
-export function getSolicitudesApi() {
-    const solicitudes = localStorage.getItem(SOLICITUDES);
-    if(solicitudes) {
-        return JSON.parse(solicitudes);
+
+// Obtener todas las solicitudes
+export async function getSolicitudesApi() {
+    try {
+        const response = await axios.get(API_URL);
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener solicitudes:', error);
+        throw error;
     }
-    return [];
 }
 
-export function deleteSolicitudApi(idSolicitud) {
-    const solicitudes = getSolicitudesApi();
-    remove(solicitudes, function(solicitud) {
-        return solicitud.id === idSolicitud;
-    });
-    localStorage.setItem(SOLICITUDES, JSON.stringify(solicitudes));
+// Eliminar una solicitud
+export async function deleteSolicitudApi(idSolicitud) {
+    try {
+        await axios.delete(`${API_URL}/${idSolicitud}`);
+        return true;
+    } catch (error) {
+        console.error('Error al eliminar solicitud:', error);
+        throw error;
+    }
+}
+
+// Actualizar una solicitud
+export async function updateSolicitudApi(id, solicitudData) {
+    try {
+        const response = await axios.patch(`${API_URL}/${id}`, solicitudData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al actualizar solicitud:', error);
+        throw error;
+    }
 }

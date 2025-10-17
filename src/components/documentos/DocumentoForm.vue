@@ -1,162 +1,191 @@
 <template>
-  <div
-    class="documento-form-container max-w-screen-xl mx-auto px-3"
-    :class="{ open: showForm }"
+  <BaseForm
+    :visible="showForm"
+    :title="editMode ? 'Editar Documento' : 'Nuevo Documento'"
+    :title-icon="editMode ? 'pi pi-pencil' : 'pi pi-file-plus'"
+    :submit-label="editMode ? 'Actualizar Documento' : 'Crear Documento'"
+    submit-icon="pi pi-check"
+    :is-valid="isFormValid"
+    :loading="loading"
+    @submit="sendDocumento"
+    @cancel="openCloseForm"
   >
-    <Card v-if="showForm" class="documento-form-card">
-      <template #title>
-        <div class="flex align-items-center gap-2">
-          <i class="pi pi-file-plus text-primary"></i>
-          Nuevo Documento
-        </div>
-      </template>
-      <template #content>
-        <form @submit.prevent="sendDocumento" class="flex flex-column gap-4">
-          <!-- Información del Documento -->
-          <div class="form-section">
-            <h4 class="section-title">Información del Documento</h4>
-
-            <div class="field">
-              <label class="block font-semibold mb-2"
-                >Nombre del Archivo *</label
-              >
-              <InputText
-                v-model="documento.nombre"
-                placeholder="Ingresa el nombre del documento"
-                class="w-full"
-              />
+    <BaseFormSection title="Información del Documento">
+      <BaseField 
+        label="Solicitud" 
+        required 
+        :error="errors.solicitudId"
+        hint="Selecciona la solicitud a la que pertenece este documento"
+      >
+        <Select
+          v-model="documento.solicitudId"
+          :options="solicitudOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Selecciona una solicitud"
+          class="w-full"
+          :class="{ 'p-invalid': errors.solicitudId }"
+          :loading="loadingSolicitudes"
+          filter
+          filterPlaceholder="Buscar solicitud..."
+        >
+          <template #empty>
+            <div class="p-3 text-center text-gray-500">
+              {{ loadingSolicitudes ? 'Cargando solicitudes...' : 'No hay solicitudes disponibles' }}
             </div>
+          </template>
+        </Select>
+      </BaseField>
 
-            <div class="grid">
-              <div class="col-12 md:col-6">
-                <label class="block font-semibold mb-2"
-                  >Tipo de Documento *</label
-                >
-                <Select
-                  v-model="documento.tipo"
-                  :options="tipoDocumentoOptions"
-                  placeholder="Selecciona el tipo"
-                  class="w-full"
-                />
-              </div>
+      <div class="grid">
+        <BaseField label="Extensión" required cols="12 md:col-6" :error="errors.extension">
+          <Select
+            v-model="documento.extension"
+            :options="extensionOptions"
+            placeholder="Selecciona la extensión"
+            class="w-full"
+            :class="{ 'p-invalid': errors.extension }"
+          />
+        </BaseField>
 
-              <div class="col-12 md:col-6">
-                <label class="block font-semibold mb-2">Solicitud ID *</label>
-                <InputNumber
-                  v-model="documento.solicitudId"
-                  placeholder="ID de la solicitud asociada"
-                  class="w-full"
-                />
-              </div>
-            </div>
-
-            <div class="field">
-              <label class="block font-semibold mb-2">Descripción</label>
-              <Textarea
-                v-model="documento.descripcion"
-                placeholder="Describe el contenido del documento"
-                rows="3"
-                class="w-full"
-              />
-            </div>
-
-            <div class="field">
-              <label class="block font-semibold mb-2">Archivo *</label>
-              <FileUpload
-                mode="basic"
-                :auto="false"
-                chooseLabel="Seleccionar Archivo"
-                class="w-full"
-                @select="onFileSelect"
-              />
-              <small class="text-muted"
-                >Formatos permitidos: PDF, DOC, DOCX, JPG, PNG</small
-              >
-            </div>
-          </div>
-
-          <div class="flex gap-2 justify-content-end">
-            <BaseButton
-              label="Cancelar"
-              icon="pi pi-times"
-              variant="secondary"
-              outlined
-              @click="openCloseForm"
-            />
-            <BaseButton
-              type="submit"
-              label="Guardar Documento"
-              icon="pi pi-check"
-              variant="primary"
-              :disabled="!isFormValid"
-            />
-          </div>
-        </form>
-      </template>
-    </Card>
-  </div>
+        <BaseField label="Nombre del Archivo" required cols="12 md:col-6" :error="errors.nombreArchivo">
+          <InputText
+            v-model="documento.nombreArchivo"
+            placeholder="Ej: curriculum_vitae"
+            class="w-full"
+            :class="{ 'p-invalid': errors.nombreArchivo }"
+          />
+        </BaseField>
+      </div>
+    </BaseFormSection>
+  </BaseForm>
 </template>
 
 <script>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, watch, onMounted } from "vue";
 import { useToast } from "primevue/usetoast";
-import BaseButton from "../common/BaseButton.vue";
-
-// Importar componentes PrimeVue necesarios
-import InputNumber from "primevue/inputnumber";
+import { useDocumentosStore } from "@/stores/documentos.store";
+import { useSolicitudesStore } from "@/stores/solicitudes.store";
+import { validateText, validateSelect, validateId } from "@/utils/validators";
+import BaseForm from "../common/BaseForm.vue";
+import BaseFormSection from "../common/BaseFormSection.vue";
+import BaseField from "../common/BaseField.vue";
 import Select from "primevue/select";
-import FileUpload from "primevue/fileupload";
+import InputText from "primevue/inputtext";
 
 export default {
   components: {
-    BaseButton,
-    InputNumber,
+    BaseForm,
+    BaseFormSection,
+    BaseField,
     Select,
-    FileUpload,
+    InputText,
   },
   props: {
     showForm: Boolean,
     openCloseForm: Function,
-    reloadDocumentos: Function,
+    editMode: Boolean,
+    documentoToEdit: Object,
   },
   setup(props) {
     const toast = useToast();
+    const documentosStore = useDocumentosStore();
+    const solicitudesStore = useSolicitudesStore();
+    const loading = ref(false);
+    const loadingSolicitudes = ref(false);
+    const errors = ref({});
 
-    // Objeto reactivo para el documento
     const documento = reactive({
-      nombre: "",
-      tipo: "",
-      descripcion: "",
       solicitudId: null,
-      archivo: null,
+      extension: "",
+      nombreArchivo: "",
     });
 
-    // Opciones para el dropdown de tipo
-    const tipoDocumentoOptions = [
-      "CV/Currículum",
-      "Carta de Presentación",
-      "Certificados",
-      "Portafolio",
-      "Referencias",
-      "Otros",
-    ];
+    const extensionOptions = ["pdf", "docx", "jpg", "png"];
 
-    // Validación del formulario
-    const isFormValid = computed(() => {
-      return (
-        documento.nombre &&
-        documento.tipo &&
-        documento.solicitudId &&
-        documento.archivo
-      );
+    // Computed para crear opciones del select de solicitudes
+    const solicitudOptions = computed(() => {
+      return solicitudesStore.solicitudes.map(solicitud => ({
+        value: solicitud.id,
+        label: `#${solicitud.id} - ${solicitud.titulo}`
+      }));
     });
 
-    // Manejar selección de archivo
-    const onFileSelect = (event) => {
-      documento.archivo = event.files[0];
+    // Cargar solicitudes al montar el componente
+    const cargarSolicitudes = async () => {
+      loadingSolicitudes.value = true;
+      try {
+        await solicitudesStore.fetchSolicitudes();
+      } catch (error) {
+        console.error('Error al cargar solicitudes:', error);
+        toast.add({
+          severity: 'warn',
+          summary: 'Advertencia',
+          detail: 'No se pudieron cargar las solicitudes disponibles',
+          life: 3000
+        });
+      } finally {
+        loadingSolicitudes.value = false;
+      }
     };
 
-    // Resetear formulario
+    // Cargar solicitudes cuando se monta el componente
+    onMounted(() => {
+      cargarSolicitudes();
+    });
+
+    const validateForm = () => {
+      errors.value = {};
+
+      const solicitudIdValidation = validateId(documento.solicitudId, {
+        fieldName: "Solicitud ID",
+      });
+      if (!solicitudIdValidation.isValid) {
+        errors.value.solicitudId = solicitudIdValidation.error;
+      }
+
+      const extensionValidation = validateSelect(documento.extension, {
+        fieldName: "Extensión",
+        allowedValues: extensionOptions,
+      });
+      if (!extensionValidation.isValid) {
+        errors.value.extension = extensionValidation.error;
+      }
+
+      const nombreArchivoValidation = validateText(documento.nombreArchivo, {
+        maxLength: 255,
+        fieldName: "Nombre del Archivo",
+        strictMode: true,
+      });
+      if (!nombreArchivoValidation.isValid) {
+        errors.value.nombreArchivo = nombreArchivoValidation.error;
+      }
+
+      return Object.keys(errors.value).length === 0;
+    };
+
+    const isFormValid = computed(() => {
+      const hasRequiredFields =
+        documento.solicitudId &&
+        documento.extension &&
+        documento.nombreArchivo?.trim();
+
+      return hasRequiredFields && Object.keys(errors.value).length === 0;
+    });
+
+    const loadDocumentoData = (documentoData) => {
+      if (!documentoData) return;
+
+      console.log('Cargando documento para editar:', documentoData);
+
+      // Mapear campos de snake_case a camelCase
+      documento.solicitudId = documentoData.solicitud?.solicitud_id || documentoData.solicitud_id || documentoData.solicitudId;
+      documento.extension = documentoData.extension;
+      documento.nombreArchivo = documentoData.nombre_archivo || documentoData.nombreArchivo;
+
+      console.log('Documento cargado en el formulario:', documento);
+    };
+
     const resetForm = () => {
       Object.keys(documento).forEach((key) => {
         if (key === "solicitudId") {
@@ -165,112 +194,134 @@ export default {
           documento[key] = "";
         }
       });
-      documento.archivo = null;
+      errors.value = {};
     };
 
-    const sendDocumento = () => {
-      if (!isFormValid.value) {
+    const sendDocumento = async () => {
+      if (!validateForm()) {
+        const errorMessages = Object.values(errors.value);
+        const errorCount = errorMessages.length;
+
+        const hasInvalidCharacters = errorMessages.some((msg) =>
+          msg.includes("caracteres no permitidos")
+        );
+        const hasEmptyFields = errorMessages.some((msg) =>
+          msg.includes("obligatorio")
+        );
+
+        let summary = "Formulario incompleto";
+        let detail = "";
+
+        if (hasInvalidCharacters) {
+          summary = "Caracteres no permitidos";
+          detail = `Se detectaron caracteres inválidos en ${errorCount} campo${errorCount > 1 ? "s" : ""}. Por favor revisa los campos marcados en rojo.`;
+        } else if (hasEmptyFields) {
+          summary = "Campos obligatorios vacíos";
+          detail = `Faltan ${errorCount} campo${errorCount > 1 ? "s" : ""} obligatorio${errorCount > 1 ? "s" : ""}. Por favor completa los campos marcados en rojo.`;
+        } else {
+          detail = `Hay ${errorCount} error${errorCount > 1 ? "es" : ""} en el formulario. Por favor corrige los campos marcados en rojo.`;
+        }
+
         toast.add({
-          severity: "warn",
-          summary: "Campos requeridos",
-          detail: "Por favor completa todos los campos obligatorios",
-          life: 3000,
+          severity: "error",
+          summary: summary,
+          detail: detail,
+          life: 5000,
         });
         return;
       }
 
+      loading.value = true;
+
       try {
-        // Aquí implementarás la llamada a la API de documentos
-        console.log("Guardando documento:", documento);
+        if (props.editMode && props.documentoToEdit) {
+          // MODO EDICIÓN - Solo enviar campos editables en snake_case
+          const documentoData = {
+            extension: documento.extension,
+            nombre_archivo: documento.nombreArchivo.trim(),
+          };
+
+          console.log('Actualizando documento ID:', props.documentoToEdit.id);
+          console.log('Datos a enviar:', documentoData);
+
+          await documentosStore.updateDocumento(
+            props.documentoToEdit.id,
+            documentoData
+          );
+
+          toast.add({
+            severity: "success",
+            summary: "¡Documento actualizado!",
+            detail: `El documento "${documento.nombreArchivo}.${documento.extension}" fue actualizado exitosamente`,
+            life: 4000,
+          });
+        } else {
+          // MODO CREACIÓN - Enviar todos los campos en snake_case
+          const documentoData = {
+            extension: documento.extension,
+            nombre_archivo: documento.nombreArchivo.trim(),
+            solicitud_id: documento.solicitudId,
+          };
+
+          await documentosStore.createDocumento(documentoData);
+
+          toast.add({
+            severity: "success",
+            summary: "¡Documento creado!",
+            detail: `El documento "${documento.nombreArchivo}.${documento.extension}" fue creado exitosamente`,
+            life: 4000,
+          });
+        }
 
         resetForm();
-        props.reloadDocumentos();
         props.openCloseForm();
-
-        toast.add({
-          severity: "success",
-          summary: "Éxito",
-          detail: "Documento guardado correctamente",
-          life: 3000,
-        });
       } catch (error) {
+        console.error("Error al guardar documento:", error);
         toast.add({
           severity: "error",
           summary: "Error",
-          detail: "No se pudo guardar el documento",
-          life: 3000,
+          detail: error.message || "No se pudo guardar el documento",
+          life: 4000,
         });
+      } finally {
+        loading.value = false;
       }
     };
 
+    watch(
+      () => props.documentoToEdit,
+      (newValue) => {
+        if (newValue && props.editMode) {
+          loadDocumentoData(newValue);
+        } else if (!props.editMode) {
+          resetForm();
+        }
+      },
+      { immediate: true }
+    );
+
+    watch(
+      () => ({ ...documento }),
+      (newVal, oldVal) => {
+        Object.keys(newVal).forEach((key) => {
+          if (newVal[key] !== oldVal[key] && errors.value[key]) {
+            delete errors.value[key];
+          }
+        });
+      },
+      { deep: true }
+    );
+
     return {
       documento,
-      tipoDocumentoOptions,
+      extensionOptions,
+      solicitudOptions,
+      loadingSolicitudes,
       isFormValid,
+      loading,
+      errors,
       sendDocumento,
-      onFileSelect,
     };
   },
 };
 </script>
-
-<style scoped>
-.documento-form-container {
-  margin-top: 1rem;
-  height: 0;
-  overflow: hidden;
-  transition: height 0.3s ease;
-}
-
-.documento-form-container.open {
-  height: auto;
-}
-
-.documento-form-card {
-  animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-section {
-  padding: 1.5rem;
-  border: 1px solid var(--p-surface-border);
-  border-radius: 8px;
-  background: var(--p-surface-50);
-  margin-bottom: 1rem;
-}
-
-.section-title {
-  color: var(--p-primary-color);
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 0 0 1rem 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--p-primary-color);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .form-section {
-    padding: 1rem;
-  }
-
-  .section-title {
-    font-size: 1.1rem;
-  }
-}
-</style>

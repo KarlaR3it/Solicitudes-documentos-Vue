@@ -1,7 +1,7 @@
 <template>
-  <div class="app-container min-h-screen bg-surface-50">
+  <div class="app-container">
     <NavBar @navigate="handleNavigationRequest" />
-    <main class="py-4">
+    <main class="main-content">
       <!-- Vista Home por defecto -->
       <Home v-if="currentView === 'home'" />
 
@@ -22,7 +22,13 @@
           @edit-solicitud="handleEditSolicitud"
         />
       </div>
+
+      <!-- Componente Documentos -->
+      <div v-else-if="currentView === 'documentos'">
+        <DocumentoList />
+      </div>
     </main>
+    <Footer />
     <Toast />
   </div>
 </template>
@@ -30,9 +36,10 @@
 <script>
 import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
-import { NavBar } from "./components/shared";
+import { NavBar, Footer } from "./components/shared";
 import Home from "./views/Home.vue";
 import { SolicitudForm, SolicitudList } from "./components/solicitudes";
+import { DocumentoList } from "./components/documentos";
 import useFormSolicitud from "./composables/useFormSolicitud";
 import { useSolicitudesStore } from "./stores/solicitudes.store";
 
@@ -40,9 +47,11 @@ export default {
   name: "App",
   components: {
     NavBar,
+    Footer,
     Home,
     SolicitudForm,
     SolicitudList,
+    DocumentoList,
   },
   setup() {
     // ============================================
@@ -116,6 +125,15 @@ export default {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--p-surface-50);
+}
+
+.main-content {
+  flex: 1;
+  padding: 0;
 }
 
 /* Los estilos globales de PrimeVue están en src/styles/primevue-global.css */
@@ -123,6 +141,10 @@ export default {
 /* Responsive utilities adicionales */
 @media (max-width: 768px) {
   .app-container {
+    padding: 0;
+  }
+
+  .main-content {
     padding: 0;
   }
 }
