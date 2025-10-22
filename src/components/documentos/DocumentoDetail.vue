@@ -73,6 +73,7 @@ import { computed } from "vue";
 import Dialog from "primevue/dialog";
 import Tag from "primevue/tag";
 import BaseButton from "../common/BaseButton.vue";
+import { getExtensionIcon, getExtensionColor } from "@/constants/documento.constants";
 
 export default {
   components: {
@@ -103,25 +104,8 @@ export default {
       };
     });
 
-    const getExtensionIcon = (extension) => {
-      const icons = {
-        pdf: "pi-file-pdf",
-        docx: "pi-file-word",
-        jpg: "pi-image",
-        png: "pi-image",
-      };
-      return icons[extension] || "pi-file";
-    };
-
-    const getExtensionSeverity = (extension) => {
-      const severities = {
-        pdf: "danger",
-        docx: "info",
-        jpg: "success",
-        png: "success",
-      };
-      return severities[extension] || "secondary";
-    };
+    // Usar funciones del archivo de constantes
+    const getExtensionSeverity = getExtensionColor;
 
     return {
       normalizedDocumento,

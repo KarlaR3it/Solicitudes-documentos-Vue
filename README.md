@@ -12,7 +12,6 @@
 
 ## 📋 Tabla de Contenidos
 
-- [Requisitos del Proyecto Cumplidos](#-requisitos-del-proyecto-cumplidos)
 - [Instalación Rápida (5 minutos)](#-instalación-rápida-5-minutos)
 - [Requisitos Previos](#-requisitos-previos)
 - [Configuración Detallada](#-configuración-detallada)
@@ -24,32 +23,6 @@
 - [Scripts Disponibles](#-scripts-disponibles)
 - [Guía para Desarrolladores](#-guía-para-desarrolladores)
 - [Autor](#-autor)
-
----
-
-## ✅ Requisitos del Proyecto Cumplidos
-
-Este proyecto cumple al **100%** con todos los requisitos solicitados:
-
-| Requisito | Estado | Descripción |
-|-----------|--------|-------------|
-| ✅ Proyecto Vue existente | **Cumplido** | Proyecto Vue 3 con Composition API |
-| ✅ Uso de backend Go | **Cumplido** | Conectado a APIs REST en Go (puertos 8082 y 8083) |
-| ✅ Elementos distribuidos | **Cumplido** | Arquitectura modular con componentes, stores, API layer |
-| ✅ Sin errores de compilación | **Cumplido** | Proyecto compila y ejecuta sin errores |
-| ✅ Sección de inicio | **Cumplido** | Vista `Home.vue` con información del proyecto |
-| ✅ Crear registro (solicitudes) | **Cumplido** | Formulario completo en `SolicitudForm.vue` |
-| ✅ Validaciones (mínimo 2) | **Cumplido** | **+15 validaciones** implementadas (campos requeridos, longitud, rangos, fechas, etc.) |
-| ✅ Editar/Eliminar registro | **Cumplido** | CRUD completo con edición y eliminación |
-| ✅ Fetch/Axios para API REST | **Cumplido** | **Axios** con cliente HTTP centralizado |
-| ✅ Conexión al backend | **Cumplido** | APIs en `src/api/` con endpoints configurados |
-| ✅ Composition API | **Cumplido** | Todos los componentes usan Composition API |
-| ✅ Menú global | **Cumplido** | `NavBar.vue` con menú hamburguesa en todas las vistas |
-| ✅ Routing | **Cumplido** | **Vue Router 4** con navegación real, URLs amigables y lazy loading |
-| ✅ Bootstrap/librería diseño | **Cumplido** | **PrimeVue** como librería de componentes UI |
-| ✅ Componentes independientes | **Cumplido** | Componentes modulares y reutilizables |
-| ✅ Descargable y ejecutable | **Cumplido** | Setup funcional en Windows y macOS |
-| ✅ Código indentado | **Cumplido** | Prettier configurado, código formateado |
 
 ---
 
@@ -224,7 +197,7 @@ npm run dev
 
 #### ✅ Listar Solicitudes
 - **DataTable de PrimeVue** con:
-  - Paginación (10, 25, 50 registros por página)
+  - Paginación (5, 10, 25 registros por página)
   - Búsqueda global
   - Ordenamiento por columnas
   - Filtros por estado
@@ -274,7 +247,6 @@ solicitudes-vue/
 │   │   │   ├── BaseField.vue
 │   │   │   ├── BaseForm.vue
 │   │   │   ├── BaseFormSection.vue
-│   │   │   ├── BaseModal.vue
 │   │   │   └── FileIcon.vue
 │   │   ├── shared/             # Componentes compartidos
 │   │   │   ├── NavBar.vue      # Menú de navegación global
@@ -301,7 +273,8 @@ solicitudes-vue/
 │   │   └── api.config.js      # URLs y configuración de APIs
 │   │
 │   ├── constants/              # 📋 Constantes
-│   │   └── solicitud.constants.js # Opciones de formularios
+│   │   ├── solicitud.constants.js # Opciones de solicitudes
+│   │   └── documento.constants.js # Opciones de documentos
 │   │
 │   ├── utils/                  # 🛠️ Utilidades
 │   │   └── validators.js      # Funciones de validación
@@ -613,7 +586,7 @@ npm run dev
 
 ---
 
-## 📜 Scripts Disponibles
+## 📜 Comandos Disponibles
 
 ```bash
 # ===================================
@@ -662,111 +635,6 @@ npm run clean
 
 ---
 
-## 👨‍💻 Guía para Desarrolladores
-
-### Convenciones de Código
-
-#### Commits
-Usa mensajes descriptivos en español:
-```bash
-git commit -m "feat: agregar filtro por estado en solicitudes"
-git commit -m "fix: corregir validación de fechas en formulario"
-git commit -m "docs: actualizar README con instrucciones de setup"
-git commit -m "refactor: simplificar lógica de validación"
-```
-
-#### Branches
-```bash
-git checkout -b feature/nombre-funcionalidad
-git checkout -b fix/nombre-bug
-git checkout -b docs/actualizar-documentacion
-```
-
-#### Code Style
-- **Indentación**: 2 espacios
-- **Comillas**: Simples ('') para strings
-- **Punto y coma**: Opcional pero consistente
-- **Nombres**: camelCase para variables y funciones
-- **Componentes**: PascalCase para nombres de archivos
-
-### Agregar una Nueva Funcionalidad
-
-#### 1. Crear el endpoint en la API
-```javascript
-// src/api/solicitud.js
-export const nuevaFuncionApi = async (params) => {
-  const { data } = await solicitudesClient.get(`/endpoint/${params}`);
-  return data;
-};
-```
-
-#### 2. Agregar action en el store
-```javascript
-// src/stores/solicitudes.store.js
-const nuevaFuncion = async (params) => {
-  isLoading.value = true;
-  try {
-    const result = await nuevaFuncionApi(params);
-    // Actualizar estado
-    return result;
-  } finally {
-    isLoading.value = false;
-  }
-};
-```
-
-#### 3. Usar en el componente
-```vue
-<script>
-import { useSolicitudesStore } from '@/stores/solicitudes.store';
-
-export default {
-  setup() {
-    const store = useSolicitudesStore();
-    
-    const ejecutarFuncion = async () => {
-      await store.nuevaFuncion(params);
-    };
-    
-    return { ejecutarFuncion };
-  }
-}
-</script>
-```
-
-### Debugging
-
-#### Logs en Desarrollo
-El cliente HTTP automáticamente muestra logs en desarrollo:
-```
-🚀 GET /solicitudes
-✅ GET /solicitudes - 200
-```
-
-#### Vue DevTools
-Instala la extensión de Vue DevTools para Chrome/Firefox:
-- Ver el estado de Pinia en tiempo real
-- Inspeccionar componentes y props
-- Ver eventos y timeline
-
----
-
-## 📞 Soporte y Contacto
-
-### ¿Necesitas Ayuda?
-
-Si tienes problemas con el proyecto:
-
-1. **Revisa esta documentación** completa
-2. **Verifica la sección de troubleshooting** con errores comunes
-3. **Revisa la consola del navegador** (F12) para ver errores
-4. **Contacta al equipo**:
-   - **Karla Ramírez**: karla.ramirez@3it.cl
-   - **GitHub**: [@KarlaR3it](https://github.com/KarlaR3it)
-   - **LinkedIn**: [Karla Ramírez](https://linkedin.com/in/karla-r-4b3802194)
-
----
-
 ## 👨‍💻 Autor
 
 **Karla Ramírez**  
@@ -775,20 +643,6 @@ Desarrolladora Full Stack Trainee
 📧 **Email**: [karla.ramirez@3it.cl](mailto:karla.ramirez@3it.cl)  
 💼 **LinkedIn**: [linkedin.com/in/karla-r-4b3802194](https://linkedin.com/in/karla-r-4b3802194)  
 🐙 **GitHub**: [github.com/KarlaR3it](https://github.com/KarlaR3it)
-
----
-
-## 📄 Licencia
-
-Este proyecto es de uso académico y profesional.
-
----
-
-## 🙏 Agradecimientos
-
-- Comunidad Vue.js por el excelente framework
-- PrimeVue por los componentes UI de calidad empresarial
-- Equipo de 3IT por el apoyo y mentoría
 
 ---
 

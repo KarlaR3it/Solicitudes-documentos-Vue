@@ -132,6 +132,7 @@ import { useToast } from "primevue/usetoast";
 import { useDocumentosStore } from "@/stores/documentos.store";
 import { useSolicitudesStore } from "@/stores/solicitudes.store";
 import useForm from "@/composables/useForm";
+import { getExtensionColor } from "@/constants/documento.constants";
 import DocumentoForm from "./DocumentoForm.vue";
 import DocumentoDetail from "./DocumentoDetail.vue";
 import BaseButton from "../common/BaseButton.vue";
@@ -219,15 +220,7 @@ export default {
       return solicitud ? solicitud.titulo : 'Sin título';
     };
 
-    const getExtensionSeverity = (extension) => {
-      const severities = {
-        pdf: "danger",
-        docx: "info",
-        jpg: "success",
-        png: "success",
-      };
-      return severities[extension] || "secondary";
-    };
+    const getExtensionSeverity = getExtensionColor;
 
     const onRowClick = (event) => {
       viewDocumento(event.data);

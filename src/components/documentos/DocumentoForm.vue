@@ -67,6 +67,7 @@ import { useToast } from "primevue/usetoast";
 import { useDocumentosStore } from "@/stores/documentos.store";
 import { useSolicitudesStore } from "@/stores/solicitudes.store";
 import { validateText, validateSelect, validateId } from "@/utils/validators";
+import { EXTENSIONES_PERMITIDAS } from "@/constants/documento.constants";
 import BaseForm from "../common/BaseForm.vue";
 import BaseFormSection from "../common/BaseFormSection.vue";
 import BaseField from "../common/BaseField.vue";
@@ -101,7 +102,7 @@ export default {
       nombreArchivo: "",
     });
 
-    const extensionOptions = ["pdf", "docx", "jpg", "png"];
+    const extensionOptions = EXTENSIONES_PERMITIDAS;
 
     // Computed para crear opciones del select de solicitudes
     const solicitudOptions = computed(() => {
