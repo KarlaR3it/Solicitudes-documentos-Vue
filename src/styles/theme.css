@@ -1,0 +1,552 @@
+/**
+ * Estilos para el tema claro/oscuro
+ * Utiliza las variables CSS de PrimeVue y define colores personalizados
+ */
+
+/* ============================================
+   TEMA CLARO (por defecto)
+   ============================================ */
+:root {
+  /* Colores de superficie */
+  --app-bg-color: #f8fafc;
+  --app-card-bg: #ffffff;
+  --app-text-color: #1e293b;
+  --app-text-secondary: #64748b;
+  --app-border-color: #e2e8f0;
+  
+  /* Sombras */
+  --app-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --app-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --app-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  
+  /* Transiciones */
+  --app-transition: all 0.3s ease;
+}
+
+/* ============================================
+   TEMA OSCURO
+   ============================================ */
+.dark-mode {
+  /* Colores de superficie */
+  --app-bg-color: #0f172a;
+  --app-card-bg: #1e293b;
+  --app-text-color: #f1f5f9;
+  --app-text-secondary: #0664e8;
+  --app-border-color: #334155;
+  
+  /* Sombras más sutiles en modo oscuro */
+  --app-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --app-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --app-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   APLICACIÓN DE ESTILOS GLOBALES
+   ============================================ */
+
+/* Fondo de la aplicación */
+body {
+  background-color: var(--app-bg-color);
+  color: var(--app-text-color);
+  transition: var(--app-transition);
+}
+
+/* Contenedor principal */
+.app-container {
+  background-color: var(--app-bg-color);
+  transition: var(--app-transition);
+}
+
+/* Forzar fondos oscuros en modo oscuro para todos los elementos */
+.dark-mode * {
+  border-color: var(--app-border-color);
+}
+
+/* Elementos con fondo blanco que deben cambiar a oscuro */
+.dark-mode .profile-card,
+.dark-mode .profile-content,
+.dark-mode .profile-section,
+.dark-mode .skill-category,
+.dark-mode .interest-item {
+  background: var(--app-card-bg) !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .section-text,
+.dark-mode .section-title,
+.dark-mode .skill-category-title,
+.dark-mode .interest-item span {
+  color: var(--app-text-color) !important;
+}
+
+/* Asegurar que los p-surface-0 y p-surface-50 cambien en modo oscuro */
+.dark-mode [class*="surface-"] {
+  background: var(--app-card-bg) !important;
+}
+
+/* Secciones de formulario en modo oscuro */
+.dark-mode .form-section {
+  background: var(--app-card-bg) !important;
+  border-color: var(--app-border-color) !important;
+}
+
+.dark-mode .form-section .section-title {
+  color: #60a5fa !important;
+  border-bottom-color: #60a5fa !important;
+}
+
+/* Secciones de detalle (modal de solicitud) en modo oscuro */
+.dark-mode .detail-section {
+  background: var(--app-card-bg) !important;
+  border-color: var(--app-border-color) !important;
+}
+
+.dark-mode .detail-section .section-title {
+  color: #60a5fa !important;
+  border-bottom-color: #60a5fa !important;
+}
+
+.dark-mode .detail-field .field-label {
+  color: #94a3b8 !important;
+}
+
+.dark-mode .detail-field .field-value {
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .title-highlight {
+  color: #60a5fa !important;
+}
+
+.dark-mode .description-text {
+  background: #334155 !important;
+  border-left-color: #60a5fa !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .salary-amount {
+  color: #60a5fa !important;
+}
+
+.dark-mode .salary-separator {
+  color: #94a3b8 !important;
+}
+
+/* ============================================
+   ESTILOS PARA COMPONENTES PRIMEVUE
+   ============================================ */
+
+/* Cards en modo oscuro */
+.dark-mode .p-card {
+  background: var(--app-card-bg);
+  border-color: var(--app-border-color);
+  box-shadow: var(--app-shadow-md);
+}
+
+.dark-mode .p-card .p-card-body {
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-card .p-card-title {
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-card .p-card-subtitle {
+  color: var(--app-text-secondary);
+}
+
+/* DataTable en modo oscuro */
+.dark-mode .p-datatable {
+  background: var(--app-card-bg);
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-datatable .p-datatable-header {
+  background: var(--app-card-bg);
+  border-color: var(--app-border-color);
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-datatable .p-datatable-thead > tr > th {
+  background: #2b374b;
+  border-color: var(--app-border-color);
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-datatable .p-datatable-tbody > tr {
+  background: var(--app-card-bg);
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-datatable .p-datatable-tbody > tr:hover {
+  background: #334155 !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-datatable .p-datatable-tbody > tr:hover > td {
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-datatable .p-datatable-tbody > tr > td {
+  border-color: var(--app-border-color);
+}
+
+/* Paginación del DataTable en modo oscuro */
+.dark-mode .p-datatable .p-datatable-footer,
+.dark-mode .p-paginator {
+  background: var(--app-card-bg) !important;
+  border-color: var(--app-border-color) !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-paginator .p-paginator-pages .p-paginator-page {
+  background: #334155 !important;
+  border-color: var(--app-border-color) !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-paginator .p-paginator-pages .p-paginator-page:hover {
+  background: #475569 !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: white !important;
+}
+
+.dark-mode .p-paginator .p-paginator-first,
+.dark-mode .p-paginator .p-paginator-prev,
+.dark-mode .p-paginator .p-paginator-next,
+.dark-mode .p-paginator .p-paginator-last {
+  background: #334155 !important;
+  border-color: var(--app-border-color) !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-paginator .p-paginator-first:hover,
+.dark-mode .p-paginator .p-paginator-prev:hover,
+.dark-mode .p-paginator .p-paginator-next:hover,
+.dark-mode .p-paginator .p-paginator-last:hover {
+  background: #475569 !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-paginator .p-dropdown {
+  background: #334155 !important;
+  border-color: var(--app-border-color) !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-paginator .p-dropdown:hover {
+  background: #475569 !important;
+}
+
+.dark-mode .p-paginator-current {
+  color: var(--app-text-color) !important;
+}
+
+/* Inputs en modo oscuro */
+.dark-mode .p-inputtext,
+.dark-mode .p-textarea,
+.dark-mode .p-dropdown,
+.dark-mode .p-calendar,
+.dark-mode .p-inputnumber-input {
+  background: #334155;
+  border-color: var(--app-border-color);
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-inputtext:enabled:focus,
+.dark-mode .p-textarea:enabled:focus,
+.dark-mode .p-dropdown:not(.p-disabled):focus,
+.dark-mode .p-calendar:not(.p-disabled):focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.2);
+}
+
+.dark-mode .p-inputtext::placeholder,
+.dark-mode .p-textarea::placeholder {
+  color: var(--app-text-secondary);
+}
+
+/* Dialogs en modo oscuro */
+.dark-mode .p-dialog {
+  background: var(--app-card-bg) !important;
+  border-color: var(--app-border-color) !important;
+  box-shadow: var(--app-shadow-lg) !important;
+}
+
+.dark-mode .p-dialog .p-dialog-header {
+  background: var(--app-card-bg) !important;
+  border-color: var(--app-border-color) !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-dialog .p-dialog-content {
+  background: var(--app-card-bg) !important;
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-dialog .p-dialog-footer {
+  background: var(--app-card-bg) !important;
+  border-color: var(--app-border-color) !important;
+}
+
+/* Asegurar que todos los elementos dentro del dialog tengan el color correcto */
+.dark-mode .p-dialog label {
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-dialog h1,
+.dark-mode .p-dialog h2,
+.dark-mode .p-dialog h3,
+.dark-mode .p-dialog h4,
+.dark-mode .p-dialog h5,
+.dark-mode .p-dialog h6 {
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-dialog p {
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .p-dialog .p-dialog-title {
+  color: var(--app-text-color) !important;
+}
+
+/* Dropdown panel en modo oscuro */
+.dark-mode .p-dropdown-panel {
+  background: #334155;
+  border-color: var(--app-border-color);
+}
+
+.dark-mode .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover {
+  background: #475569;
+}
+
+.dark-mode .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Calendar en modo oscuro */
+.dark-mode .p-datepicker {
+  background: #334155;
+  border-color: var(--app-border-color);
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-datepicker .p-datepicker-header {
+  background: #334155;
+  border-color: var(--app-border-color);
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-datepicker table td > span {
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-datepicker table td > span:hover {
+  background: #475569;
+}
+
+.dark-mode .p-datepicker table td.p-datepicker-today > span {
+  background: #475569;
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-datepicker table td > span.p-highlight {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Toast en modo oscuro */
+.dark-mode .p-toast .p-toast-message {
+  background: var(--app-card-bg);
+  border-color: var(--app-border-color);
+  box-shadow: var(--app-shadow-lg);
+}
+
+.dark-mode .p-toast .p-toast-message .p-toast-message-content {
+  color: var(--app-text-color);
+}
+
+/* Menu/Overlay en modo oscuro */
+.dark-mode .p-menu,
+.dark-mode .p-overlaypanel {
+  background: #334155;
+  border-color: var(--app-border-color);
+  box-shadow: var(--app-shadow-lg);
+}
+
+.dark-mode .p-menu .p-menuitem-link {
+  color: var(--app-text-color);
+}
+
+.dark-mode .p-menu .p-menuitem-link:hover {
+  background: #475569;
+}
+
+.dark-mode .p-overlaypanel .p-overlaypanel-content {
+  background: #334155;
+  color: var(--app-text-color);
+}
+
+/* Popover en modo oscuro */
+.dark-mode .p-popover {
+  background: #334155 !important;
+  border-color: var(--app-border-color) !important;
+  box-shadow: var(--app-shadow-lg) !important;
+}
+
+.dark-mode .p-popover .p-popover-content {
+  background: #334155 !important;
+  color: var(--app-text-color) !important;
+}
+
+/* Menu content dentro del Popover */
+.dark-mode .menu-content {
+  background: #334155 !important;
+}
+
+.dark-mode .menu-list {
+  background: #334155 !important;
+}
+
+.dark-mode .menu-item {
+  color: var(--app-text-color) !important;
+}
+
+.dark-mode .menu-item:hover {
+  background: #475569 !important;
+  color: #60a5fa !important;
+}
+
+/* Mask/Overlay del dialog en modo oscuro */
+.dark-mode .p-dialog-mask {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Asegurar que los formularios dentro de dialogs tengan buen contraste */
+.dark-mode .p-dialog .p-field label,
+.dark-mode .p-dialog .p-float-label label {
+  color: var(--app-text-color) !important;
+}
+
+/* Labels en modo claro - mejorar contraste */
+label,
+.p-field label,
+.p-dialog label,
+.p-float-label label {
+  color: #1e293b !important;
+  font-weight: 500;
+}
+
+/* Labels en modo oscuro */
+.dark-mode label,
+.dark-mode .p-field label,
+.dark-mode .p-dialog label,
+.dark-mode .p-float-label label {
+  color: #f1f5f9 !important;
+  font-weight: 500;
+}
+
+/* Asegurar que el texto dentro de inputs sea visible */
+.dark-mode .p-inputtext,
+.dark-mode .p-textarea,
+.dark-mode input,
+.dark-mode textarea {
+  color: var(--app-text-color) !important;
+}
+
+/* Texto de ayuda/descripción en formularios */
+.p-dialog small,
+.p-field small,
+.field-hint {
+  color: #64748b !important;
+}
+
+.dark-mode .p-dialog small,
+.dark-mode .p-field small,
+.dark-mode .field-hint {
+  color: #94a3b8 !important;
+}
+
+/* Grid y columnas dentro de formularios */
+.dark-mode .grid {
+  color: var(--app-text-color);
+}
+
+/* Asegurar que todos los divs dentro de form-section tengan el color correcto */
+.dark-mode .form-section div,
+.dark-mode .form-section span,
+.dark-mode .form-section p {
+  color: var(--app-text-color);
+}
+
+/* Badges y tags en modo oscuro */
+.dark-mode .p-badge {
+  background: #475569 !important;
+  color: var(--app-text-color) !important;
+}
+
+/* Tags mantienen sus colores pero con mejor contraste */
+.dark-mode .p-tag {
+  filter: brightness(0.8);
+}
+
+.dark-mode .p-tag.p-tag-success {
+  background: #059669 !important;
+  color: white !important;
+}
+
+.dark-mode .p-tag.p-tag-info {
+  background: #0284c7 !important;
+  color: white !important;
+}
+
+.dark-mode .p-tag.p-tag-warning {
+  background: #d97706 !important;
+  color: white !important;
+}
+
+.dark-mode .p-tag.p-tag-danger {
+  background: #ea7474 !important;
+  color: white !important;
+}
+
+.dark-mode .p-tag.p-tag-primary {
+  background: #4f46e5 !important;
+  color: white !important;
+}
+
+.dark-mode .p-tag.p-tag-secondary {
+  background: #64748b !important;
+  color: white !important;
+}
+
+/* ============================================
+   TRANSICIONES SUAVES
+   ============================================ */
+* {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease, 
+              color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+/* Evitar transiciones en elementos que no las necesitan */
+button,
+input,
+select,
+textarea {
+  transition: background-color 0.2s ease, 
+              border-color 0.2s ease, 
+              color 0.2s ease;
+}

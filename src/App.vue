@@ -1,35 +1,9 @@
 <template>
   <div class="app-container">
-    <NavBar @navigate="handleNavigationRequest" />
+    <NavBar />
     <main class="main-content">
-      <!-- Vista Home por defecto -->
-      <Home v-if="currentView === 'home'" />
-
-      <!-- Componente Solicitudes dinámico -->
-      <div v-else-if="currentView === 'solicitudes'">
-        <SolicitudForm
-          :showForm="showForm"
-          :editMode="editMode"
-          :solicitudToEdit="solicitudToEdit"
-          :openCloseForm="openCloseForm"
-          :reloadSolicitudes="reloadSolicitudes"
-        />
-        <SolicitudList
-          :solicitudes="solicitudes"
-          :reloadSolicitudes="reloadSolicitudes"
-          :showForm="showForm"
-          :openCloseForm="openCreateMode"
-          @edit-solicitud="handleEditSolicitud"
-        />
-      </div>
-
-      <!-- Componente Documentos -->
-      <div v-else-if="currentView === 'documentos'">
-        <DocumentoList />
-      </div>
-
-      <!-- Vista Acerca del Autor -->
-      <About v-else-if="currentView === 'about'" />
+      <!-- Vue Router View: renderiza el componente según la ruta -->
+      <router-view />
     </main>
     <Footer />
     <Toast />
@@ -37,14 +11,9 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import { storeToRefs } from "pinia";
+import { onMounted } from "vue";
 import { NavBar, Footer } from "./components/shared";
-import Home from "./views/Home.vue";
-import About from "./components/About.vue";
-import { SolicitudForm, SolicitudList } from "./components/solicitudes";
-import { DocumentoList } from "./components/documentos";
-import useFormSolicitud from "./composables/useFormSolicitud";
+import useTheme from "./composables/useTheme";
 import { useSolicitudesStore } from "./stores/solicitudes.store";
 
 export default {
@@ -52,75 +21,17 @@ export default {
   components: {
     NavBar,
     Footer,
-    Home,
-    About,
-    SolicitudForm,
-    SolicitudList,
-    DocumentoList,
   },
   setup() {
-    // ============================================
-    // PINIA STORE (Estado global)
-    // ============================================
-    const solicitudesStore = useSolicitudesStore();
-    const { solicitudes, isLoading } = storeToRefs(solicitudesStore);
+    // Inicializar el tema (modo claro/oscuro)
+    useTheme();
     
-    // ============================================
-    // ESTADO LOCAL (Solo UI)
-    // ============================================
-    let currentView = ref("home"); // Vista por defecto
-    const { showForm, editMode, solicitudToEdit, openCloseForm, openCreateMode, openEditMode } = useFormSolicitud();
-
-    // ============================================
-    // MÉTODOS
-    // ============================================
-    const reloadSolicitudes = async () => {
-      await solicitudesStore.fetchSolicitudes();
-    };
-
-    const handleEditSolicitud = (solicitud) => {
-      // Abrir formulario en modo edición con los datos de la solicitud
-      openEditMode(solicitud);
-    };
-
-    // Lógica de navegación simplificada
-    const handleNavigationRequest = async (targetView) => {
-      // Navegación directa sin confirmación
-      currentView.value = targetView;
-
-      // Si va a solicitudes, cargar datos y cerrar formulario
-      if (targetView === "solicitudes") {
-        await solicitudesStore.fetchSolicitudes();
-        if (showForm.value) {
-          openCloseForm(); // Cerrar formulario para mostrar lista limpia
-        }
-      }
-    };
-
-    // ============================================
-    // LIFECYCLE HOOKS
-    // ============================================
+    // Precargar solicitudes al iniciar la app
+    const solicitudesStore = useSolicitudesStore();
+    
     onMounted(() => {
-      // Cargar solicitudes al iniciar la app
       solicitudesStore.fetchSolicitudes();
     });
-
-    return {
-      // Estado del store
-      solicitudes,
-      isLoading,
-      // Estado local (formulario)
-      showForm,
-      editMode,
-      solicitudToEdit,
-      openCloseForm,
-      openCreateMode,
-      currentView,
-      // Métodos
-      reloadSolicitudes,
-      handleEditSolicitud,
-      handleNavigationRequest,
-    };
   },
 };
 </script>

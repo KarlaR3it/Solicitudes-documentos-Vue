@@ -1,49 +1,43 @@
-import axios from 'axios';
+import { solicitudesClient } from './client';
 
-const API_URL = 'http://localhost:8082/solicitudes';
+const ENDPOINT = '/solicitudes';
 
-// Crear una nueva solicitud
-export async function saveSolicitudApi(solicitudData) {
-    try {
-        const response = await axios.post(API_URL, solicitudData);
-        return response.data;
-    } catch (error) {
-        console.error('Error al guardar solicitud:', error);
-        throw error;
-    }
-}
+/**
+ * Crear una nueva solicitud
+ * @param {Object} solicitudData - Datos de la solicitud
+ * @returns {Promise<Object>} Solicitud creada
+ */
+export const saveSolicitudApi = async (solicitudData) => {
+    const { data } = await solicitudesClient.post(ENDPOINT, solicitudData);
+    return data;
+};
 
-// Obtener todas las solicitudes
-export async function getSolicitudesApi() {
-    try {
-        const response = await axios.get(API_URL);
-        return response.data;
-    } catch (error) {
-        console.error('Error al obtener solicitudes:', error);
-        throw error;
-    }
-}
+/**
+ * Obtener todas las solicitudes
+ * @returns {Promise<Array>} Lista de solicitudes
+ */
+export const getSolicitudesApi = async () => {
+    const { data } = await solicitudesClient.get(ENDPOINT);
+    return data;
+};
 
-// Eliminar una solicitud
-export async function deleteSolicitudApi(idSolicitud) {
-    try {
-        await axios.delete(`${API_URL}/${idSolicitud}`);
-        return true;
-    } catch (error) {
-        console.error('Error al eliminar solicitud:', error);
-        throw error;
-    }
-}
+/**
+ * Eliminar una solicitud
+ * @param {string|number} idSolicitud - ID de la solicitud
+ * @returns {Promise<boolean>}
+ */
+export const deleteSolicitudApi = async (idSolicitud) => {
+    await solicitudesClient.delete(`${ENDPOINT}/${idSolicitud}`);
+    return true;
+};
 
-// Actualizar una solicitud
-export async function updateSolicitudApi(id, solicitudData) {
-    try {
-        console.log('🔍 Datos enviados al PATCH:', { id, solicitudData });
-        const response = await axios.patch(`${API_URL}/${id}`, solicitudData);
-        return response.data;
-    } catch (error) {
-        console.error('❌ Error al actualizar solicitud:', error);
-        console.error('❌ Response:', error.response?.data);
-        throw error;
-    }
-}
+/**
+ * Actualizar una solicitud existente
+ * @param {string|number} id - ID de la solicitud
+ * @param {Object} solicitudData - Datos actualizados
+ * @returns {Promise<Object>} Solicitud actualizada
+ */
+export const updateSolicitudApi = async (id, solicitudData) => {
+    const { data } = await solicitudesClient.patch(`${ENDPOINT}/${id}`, solicitudData);
+    return data;
+};

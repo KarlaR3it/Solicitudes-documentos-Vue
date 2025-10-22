@@ -1,69 +1,63 @@
-import axios from 'axios';
+import { documentosClient } from './client';
 
-const API_URL = 'http://localhost:8083/documentos';
+const ENDPOINT = '/documentos';
 
-// Obtener todos los documentos
-export async function getDocumentosApi() {
-  try {
-    const response = await axios.get(API_URL);
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener documentos:', error);
-    throw error;
-  }
-}
+/**
+ * Obtener todos los documentos
+ * @returns {Promise<Array>} Lista de documentos
+ */
+export const getDocumentosApi = async () => {
+  const { data } = await documentosClient.get(ENDPOINT);
+  return data;
+};
 
-// Obtener un documento por ID
-export async function getDocumentoByIdApi(id) {
-  try {
-    const response = await axios.get(`${API_URL}/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener documento:', error);
-    throw error;
-  }
-}
+/**
+ * Obtener un documento por ID
+ * @param {string|number} id - ID del documento
+ * @returns {Promise<Object>} Documento encontrado
+ */
+export const getDocumentoByIdApi = async (id) => {
+  const { data } = await documentosClient.get(`${ENDPOINT}/${id}`);
+  return data;
+};
 
-// Obtener documentos por solicitud ID
-export async function getDocumentosBySolicitudIdApi(solicitudId) {
-  try {
-    const response = await axios.get(`${API_URL}/solicitud/${solicitudId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener documentos de la solicitud:', error);
-    throw error;
-  }
-}
+/**
+ * Obtener documentos asociados a una solicitud
+ * @param {string|number} solicitudId - ID de la solicitud
+ * @returns {Promise<Array>} Lista de documentos
+ */
+export const getDocumentosBySolicitudIdApi = async (solicitudId) => {
+  const { data } = await documentosClient.get(`${ENDPOINT}/solicitud/${solicitudId}`);
+  return data;
+};
 
-// Crear un nuevo documento
-export async function saveDocumentoApi(documentoData) {
-  try {
-    const response = await axios.post(API_URL, documentoData);
-    return response.data;
-  } catch (error) {
-    console.error('Error al crear documento:', error);
-    throw error;
-  }
-}
+/**
+ * Crear un nuevo documento
+ * @param {Object} documentoData - Datos del documento
+ * @returns {Promise<Object>} Documento creado
+ */
+export const saveDocumentoApi = async (documentoData) => {
+  const { data } = await documentosClient.post(ENDPOINT, documentoData);
+  return data;
+};
 
-// Actualizar un documento
-export async function updateDocumentoApi(id, documentoData) {
-  try {
-    const response = await axios.patch(`${API_URL}/${id}`, documentoData);
-    return response.data;
-  } catch (error) {
-    console.error('Error al actualizar documento:', error);
-    throw error;
-  }
-}
+/**
+ * Actualizar un documento existente
+ * @param {string|number} id - ID del documento
+ * @param {Object} documentoData - Datos actualizados
+ * @returns {Promise<Object>} Documento actualizado
+ */
+export const updateDocumentoApi = async (id, documentoData) => {
+  const { data } = await documentosClient.patch(`${ENDPOINT}/${id}`, documentoData);
+  return data;
+};
 
-// Eliminar un documento
-export async function deleteDocumentoApi(id) {
-  try {
-    await axios.delete(`${API_URL}/${id}`);
-    return true;
-  } catch (error) {
-    console.error('Error al eliminar documento:', error);
-    throw error;
-  }
-}
+/**
+ * Eliminar un documento
+ * @param {string|number} id - ID del documento
+ * @returns {Promise<boolean>}
+ */
+export const deleteDocumentoApi = async (id) => {
+  await documentosClient.delete(`${ENDPOINT}/${id}`);
+  return true;
+};

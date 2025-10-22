@@ -4,6 +4,7 @@ node_modules
 
 
 # local env files
+.env
 .env.local
 .env.*.local
 
@@ -22,6 +23,7 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
-# Project tracking files
-CHECKLIST-FINAL.md
-RESUMEN-FINAL.md
+# Archivos temporales y de análisis
+analyze-project.js
+eslint.config.js
+

@@ -332,7 +332,43 @@ export default {
   }
 
   .hero-description {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
+}
+
+/* ============================================
+   MODO OSCURO
+   ============================================ */
+.dark-mode .hero-title {
+  color: #f1f5f9 !important;
+}
+
+.dark-mode .hero-description {
+  color: #cbd5e1 !important;
+}
+
+.dark-mode .badge {
+  background: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+.dark-mode .step-content h4 {
+  color: #f1f5f9 !important;
+}
+
+.dark-mode .step-content p {
+  color: #cbd5e1 !important;
+}
+
+.dark-mode .step-arrow {
+  color: #475569 !important;
+}
+
+.dark-mode .feature-title {
+  color: #f1f5f9 !important;
+}
+
+.dark-mode .feature-description {
+  color: #cbd5e1 !important;
 }
 </style>

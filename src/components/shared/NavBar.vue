@@ -21,8 +21,19 @@
         </h1>
       </div>
 
+      <!-- Botón de toggle de tema claro/oscuro -->
+      <Button
+        :icon="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'"
+        severity="secondary"
+        text
+        class="theme-toggle"
+        @click="toggleTheme"
+        :aria-label="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+        v-tooltip.bottom="isDarkMode ? 'Modo claro' : 'Modo oscuro'"
+      />
+
       <!-- Componente de menú separado -->
-      <Menu ref="menu" @navigate="handleNavigation" />
+      <Menu ref="menu" />
     </div>
   </nav>
 </template>
@@ -30,28 +41,26 @@
 <script>
 import { ref } from "vue";
 import Menu from "./Menu.vue";
+import useTheme from "../../composables/useTheme";
 
 export default {
   name: "NavBar",
   components: {
     Menu,
   },
-  emits: ["navigate"],
-  setup(props, { emit }) {
+  setup() {
     const menu = ref();
+    const { isDarkMode, toggleTheme } = useTheme();
 
     const toggleMenu = (event) => {
       menu.value.show(event);
     };
 
-    const handleNavigation = (option) => {
-      emit("navigate", option);
-    };
-
     return {
       menu,
       toggleMenu,
-      handleNavigation,
+      isDarkMode,
+      toggleTheme,
     };
   },
 };
@@ -85,6 +94,22 @@ export default {
 }
 
 .hamburger-menu:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: scale(1.05);
+}
+
+.theme-toggle {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  transition: all 0.2s ease;
+  margin-left: auto;
+}
+
+.theme-toggle:hover {
   background: rgba(255, 255, 255, 0.2) !important;
   transform: scale(1.05);
 }

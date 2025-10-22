@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="formContainer"
     class="base-form-container max-w-screen-xl mx-auto px-3"
     :class="{ open: visible }"
   >
@@ -40,6 +41,7 @@
 </template>
 
 <script>
+import { watch, ref, nextTick } from 'vue';
 import BaseButton from "./BaseButton.vue";
 
 export default {
@@ -78,6 +80,25 @@ export default {
     },
   },
   emits: ["submit", "cancel"],
+  setup(props) {
+    const formContainer = ref(null);
+
+    // Scroll automático cuando el formulario se abre
+    watch(() => props.visible, (newValue) => {
+      if (newValue && formContainer.value) {
+        nextTick(() => {
+          formContainer.value.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+          });
+        });
+      }
+    });
+
+    return {
+      formContainer,
+    };
+  },
   methods: {
     handleSubmit() {
       if (!this.loading) {

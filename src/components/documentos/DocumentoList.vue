@@ -131,6 +131,7 @@ import { ref, onMounted } from "vue";
 import { useToast } from "primevue/usetoast";
 import { useDocumentosStore } from "@/stores/documentos.store";
 import { useSolicitudesStore } from "@/stores/solicitudes.store";
+import useForm from "@/composables/useForm";
 import DocumentoForm from "./DocumentoForm.vue";
 import DocumentoDetail from "./DocumentoDetail.vue";
 import BaseButton from "../common/BaseButton.vue";
@@ -160,27 +161,13 @@ export default {
     const documentosStore = useDocumentosStore();
     const solicitudesStore = useSolicitudesStore();
 
-    const showForm = ref(false);
-    const editMode = ref(false);
-    const documentoToEdit = ref(null);
+    // Usar composable genérico para el formulario
+    const { showForm, editMode, itemToEdit: documentoToEdit, openCloseForm, openCreateMode: openCreateForm, openEditMode } = useForm();
+
     const showDetail = ref(false);
     const selectedDocumento = ref(null);
     const showDeleteDialog = ref(false);
     const documentoToDelete = ref(null);
-
-    const openCloseForm = () => {
-      showForm.value = !showForm.value;
-      if (!showForm.value) {
-        editMode.value = false;
-        documentoToEdit.value = null;
-      }
-    };
-
-    const openCreateForm = () => {
-      editMode.value = false;
-      documentoToEdit.value = null;
-      showForm.value = true;
-    };
 
     const viewDocumento = (documento) => {
       selectedDocumento.value = documento;
@@ -193,9 +180,7 @@ export default {
     };
 
     const editDocumento = (documento) => {
-      documentoToEdit.value = documento;
-      editMode.value = true;
-      showForm.value = true;
+      openEditMode(documento);
       showDetail.value = false;
     };
 

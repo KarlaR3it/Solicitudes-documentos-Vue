@@ -274,6 +274,14 @@ import {
   validateId,
   validateSelect,
 } from "../../utils/validators";
+import {
+  ESTADOS_SOLICITUD,
+  AREAS,
+  PAISES_LATAM,
+  NIVELES_EXPERIENCIA,
+  MODALIDADES_TRABAJO,
+  TIPOS_SERVICIO,
+} from "../../constants/solicitud.constants";
 
 // Importar componentes base
 import BaseForm from "../common/BaseForm.vue";
@@ -332,67 +340,13 @@ export default {
       usuarioId: null,
     });
 
-    // Opciones para los dropdowns
-    const estadoOptions = [
-      "En Revisión",
-      "Finalista",
-      "Aprobada",
-      "Rechazada",
-      "Retirada",
-    ];
-
-    const areaOptions = [
-      "Tecnología",
-      "Recursos Humanos",
-      "Marketing",
-      "Ventas",
-      "Finanzas",
-      "Operaciones",
-      "Legal",
-      "Administración",
-      "Otra",
-    ];
-
-    const paisOptions = [
-      "Argentina",
-      "Bolivia",
-      "Brasil",
-      "Chile",
-      "Colombia",
-      "Costa Rica",
-      "Cuba",
-      "Ecuador",
-      "El Salvador",
-      "Guatemala",
-      "Honduras",
-      "México",
-      "Nicaragua",
-      "Panamá",
-      "Paraguay",
-      "Perú",
-      "República Dominicana",
-      "Uruguay",
-      "Venezuela",
-      "Otro",
-    ];
-
-    const nivelExperienciaOptions = [
-      "Junior",
-      "Semi Senior",
-      "Senior",
-      "Lead",
-      "Manager",
-    ];
-
-    const modalidadTrabajoOptions = ["Presencial", "Remoto", "Híbrido"];
-
-    const tipoServicioOptions = [
-      "Tiempo Completo",
-      "Medio Tiempo",
-      "Por Proyecto",
-      "Consultoría",
-      "Freelance",
-    ];
+    // Opciones para los dropdowns (importadas desde constantes)
+    const estadoOptions = ESTADOS_SOLICITUD;
+    const areaOptions = AREAS;
+    const paisOptions = PAISES_LATAM;
+    const nivelExperienciaOptions = NIVELES_EXPERIENCIA;
+    const modalidadTrabajoOptions = MODALIDADES_TRABAJO;
+    const tipoServicioOptions = TIPOS_SERVICIO;
 
     // Validaciones con mensajes específicos
     const validateForm = () => {

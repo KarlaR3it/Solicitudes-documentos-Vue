@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-
+import router from './router'
 
 import PrimeVue from 'primevue/config'
 import Aura from '@primevue/themes/aura'
@@ -11,6 +11,7 @@ import { createPinia } from 'pinia'
 
 import './styles/primevue-global.css'
 import './assets/styles/dialog-buttons.css'
+import './styles/theme.css'
 
 // Componentes PrimeVue
 import Button from 'primevue/button'
@@ -36,6 +37,9 @@ const app = createApp(App)
 
 // Configurar Pinia
 app.use(createPinia())
+
+// Configurar Vue Router
+app.use(router)
 
 app.use(PrimeVue, {
   theme: {
