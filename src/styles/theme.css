@@ -415,6 +415,11 @@ body {
   background: #334155 !important;
 }
 
+.dark-mode .menu-header {
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%) !important;
+  color: white !important;
+}
+
 .dark-mode .menu-list {
   background: #334155 !important;
 }
@@ -423,9 +428,15 @@ body {
   color: var(--app-text-color) !important;
 }
 
-.dark-mode .menu-item:hover {
+.dark-mode .menu-item:hover:not(.router-link-active) {
   background: #475569 !important;
   color: #60a5fa !important;
+}
+
+.dark-mode .menu-item.router-link-active {
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%) !important;
+  color: white !important;
+  box-shadow: none !important;
 }
 
 /* Mask/Overlay del dialog en modo oscuro */

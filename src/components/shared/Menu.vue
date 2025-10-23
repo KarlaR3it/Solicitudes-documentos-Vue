@@ -9,7 +9,7 @@
           <router-link
             to="/"
             @click="hide"
-            class="menu-item flex align-items-center p-3 cursor-pointer hover:surface-100 transition-colors"
+            class="menu-item"
           >
             <i class="pi pi-home mr-3 text-primary"></i>
             <span>Inicio</span>
@@ -19,7 +19,7 @@
           <router-link
             to="/solicitudes"
             @click="hide"
-            class="menu-item flex align-items-center p-3 cursor-pointer hover:surface-100 transition-colors"
+            class="menu-item"
           >
             <i class="pi pi-book mr-3 text-primary"></i>
             <span>Solicitudes</span>
@@ -29,7 +29,7 @@
           <router-link
             to="/documentos"
             @click="hide"
-            class="menu-item flex align-items-center p-3 cursor-pointer hover:surface-100 transition-colors"
+            class="menu-item"
           >
             <i class="pi pi-file mr-3 text-primary"></i>
             <span>Documentos</span>
@@ -39,7 +39,7 @@
           <router-link
             to="/about"
             @click="hide"
-            class="menu-item flex align-items-center p-3 cursor-pointer hover:surface-100 transition-colors"
+            class="menu-item"
           >
             <i class="pi pi-user mr-3 text-primary"></i>
             <span>Acerca del Autor</span>
@@ -76,52 +76,61 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .menu-content {
   min-width: 200px;
   background: var(--p-surface-0);
-  border-radius: 8px;
+  border-radius: 5px;
   overflow: hidden;
+  text-align: center;
 }
 
 .menu-header {
   background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
   color: white;
+  border-radius: 5px 5px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .menu-list {
-  padding: 0.8rem 0rem;
+  padding: 0.8rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.4rem;
 }
 
 .menu-item {
   text-decoration: none;
   color: var(--p-text-color);
-  border-radius: 0;
+  border-radius: 8px;
   transition: all 0.2s ease;
   cursor: pointer !important;
   display: flex;
+  align-items: center;
+  padding: 0.65rem 1rem !important;
 }
 
-.menu-item:hover {
-  background: var(--p-primary-50);
-  color: var(--p-primary-600);
+.menu-item:hover:not(.router-link-active) {
+  background: var(--p-surface-100);
+  color: var(--p-primary-color);
   transform: translateX(4px);
 }
 
 /* Estilo para el link activo */
 .menu-item.router-link-active {
-  background: var(--p-primary-100);
-  color: var(--p-primary-700);
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+  color: white;
   font-weight: 600;
-  border-left: 3px solid var(--p-primary-500);
+  box-shadow: none;
 }
+
 
 .menu-item i {
   font-size: 1.1rem;
-  width: 20px;
+  width: 15px;
+  margin-right: 0.75rem;
 }
 
 /* Responsive */
