@@ -177,14 +177,10 @@ export default {
     const loadDocumentoData = (documentoData) => {
       if (!documentoData) return;
 
-      console.log('Cargando documento para editar:', documentoData);
-
       // Mapear campos de snake_case a camelCase
       documento.solicitudId = documentoData.solicitud?.solicitud_id || documentoData.solicitud_id || documentoData.solicitudId;
       documento.extension = documentoData.extension;
       documento.nombreArchivo = documentoData.nombre_archivo || documentoData.nombreArchivo;
-
-      console.log('Documento cargado en el formulario:', documento);
     };
 
     const resetForm = () => {
@@ -267,9 +263,6 @@ export default {
             extension: documento.extension,
             nombre_archivo: documento.nombreArchivo.trim(),
           };
-
-          console.log('Actualizando documento ID:', props.documentoToEdit.id);
-          console.log('Datos a enviar:', documentoData);
 
           await documentosStore.updateDocumento(
             props.documentoToEdit.id,

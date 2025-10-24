@@ -230,11 +230,9 @@ export default {
       try {
         // Cargar solicitudes primero para tener los títulos disponibles
         await solicitudesStore.fetchSolicitudes();
-        console.log('Solicitudes cargadas:', solicitudesStore.solicitudes);
         
         // Luego cargar documentos
         await documentosStore.fetchDocumentos();
-        console.log('Documentos cargados:', documentosStore.documentos);
       } catch (error) {
         toast.add({
           severity: "error",

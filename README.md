@@ -17,11 +17,10 @@
 - [Configuración Detallada](#-configuración-detallada)
 - [Características Principales](#-características-principales)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Arquitectura y Flujo de Datos](#-arquitectura-y-flujo-de-datos)
+- [Arquitectura y Flujo de Datos](#️-arquitectura-y-flujo-de-datos)
 - [Tecnologías Utilizadas](#️-tecnologías-utilizadas)
 - [Solución de Problemas Comunes](#-solución-de-problemas-comunes)
-- [Scripts Disponibles](#-scripts-disponibles)
-- [Guía para Desarrolladores](#-guía-para-desarrolladores)
+- [Comandos Disponibles](#-comandos-disponibles)
 - [Autor](#-autor)
 
 ---
